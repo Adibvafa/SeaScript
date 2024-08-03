@@ -26,18 +26,15 @@ def process_input(player: Player, camera: Camera):
     speed = 0.1
     if keyboard_state[pg.K_w]:
         player.move(0, -speed)
-        camera.move(0, -speed)
     if keyboard_state[pg.K_s]:
         player.move(0, speed)
-        camera.move(0, speed)
     if keyboard_state[pg.K_a]:
         player.move(-speed, 0)
-        camera.move(-speed, 0)
         player.last_move_right = False
     if keyboard_state[pg.K_d]:
         player.move(speed, 0)
-        camera.move(speed, 0)
         player.last_move_right = True
+    camera.pos = player.pos
 
 
 def loop(player: Player, screen: pg.Surface, camera: Camera):

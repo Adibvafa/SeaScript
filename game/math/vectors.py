@@ -9,6 +9,19 @@ class Vec2d:
     def __add__(self, other):
         return Vec2d(self.x + other.x, self.y + other.y)
 
+    def __mul__(self, other):
+        return Vec2d(self.x * other, self.y * other)
+
+    def __truediv__(self, other):
+        return Vec2d(self.x / other, self.y / other)
+
+    def __floordiv__(self, other):
+        return Vec2d(self.x // other, self.y // other)
+
+    def __mod__(self, other):
+        return Vec2d(self.x % other, self.y % other)
+
+
     def length_squared(self):
         return self.x ** 2 + self.y ** 2
 
@@ -27,6 +40,9 @@ class Vec2d:
     def contained_within(self, min_vec, max_vec):
         return (min_vec.x <= self.x <= max_vec.x and
                 min_vec.y <= self.y <= max_vec.y)
+
+    def __sub__(self, other):
+        return Vec2d(self.x - other.x, self.y - other.y)
 
 
 class Box2d:
@@ -79,7 +95,7 @@ class Box2d:
         t2 = (max2 - min1) / slide
         return min(t1, t2), max(t1, t2)
 
-    def collision_time(self, other: 'Box2d', slide: Vec2d):
+    def collision_time(self, other: 'Box2d', slide: Vec2d) -> (bool, float):
         if self.collides(other):
             return True, 0.0
 

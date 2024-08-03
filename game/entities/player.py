@@ -11,15 +11,9 @@ class Player(Entity):
     def __init__(self, pos: tuple[float, float]):
         super().__init__(pos, (5, 5))
 
-    def move(self, dx: float, dy: float):
-        self.pos = (self.pos[0] + dx, self.pos[1] + dy)
-        if self.pos[1] < 0:
-            self.pos = (self.pos[0], 0)
-
     def type(self) -> str:
         return "player"
 
     def texture(self) -> pg.Surface:
         return textures.find_texture("player_right" if self.last_move_right else "player_left")
-
 
