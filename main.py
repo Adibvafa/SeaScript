@@ -5,6 +5,7 @@ from image_processing import load_and_preprocess_image, detect_windows_and_calcu
 from plant_recommendation import suggest_plants
 from styles import get_styles
 
+
 def main_page():
     st.markdown(get_styles(), unsafe_allow_html=True)
     st.markdown('<div class="main-container">', unsafe_allow_html=True)
@@ -29,11 +30,13 @@ def main_page():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
+
 def display_quiz_page():
     st.markdown(get_styles(), unsafe_allow_html=True)
     st.markdown('<div class="quiz-container">', unsafe_allow_html=True)
     st.markdown('<div class="question">✨ Quiz Time! ✨</div>', unsafe_allow_html=True)
-    st.markdown('<div class="question">Answer the following questions to get plant suggestions 💬</div>', unsafe_allow_html=True)
+    st.markdown('<div class="question">Answer the following questions to get plant suggestions 💬</div>',
+                unsafe_allow_html=True)
 
     with st.form(key='quiz_form'):
         sunlight = st.text_input("How much sunlight does your room get? ☀️", key="sunlight")
@@ -50,25 +53,27 @@ def display_quiz_page():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
+
 def process_quiz_answers(sunlight, watering, size):
     image_cv = load_and_preprocess_image(st.session_state.image)
     cfg_path = "yolov3.cfg"
     weights_path = "yolov3.weights"
-    
+
     if not os.path.exists(cfg_path) or not os.path.exists(weights_path):
         st.error("YOLO configuration or weight files not found. Please check the file paths.")
         return
 
     image_with_windows, total_window_area = detect_windows_and_calculate_light(image_cv, cfg_path, weights_path)
     dominant_colors = analyze_colors(image_with_windows)
-    
+
     plant_suggestions = suggest_plants(sunlight, watering, size, total_window_area, dominant_colors)
-    
+
     st.write("🌟 Based on your photo and quiz responses, here are some plant suggestions: 🌟")
     for plant in plant_suggestions:
         st.write(f"- {plant}")
 
     st.session_state.page = "main"
+
 
 def main():
     if 'page' not in st.session_state:
@@ -78,6 +83,7 @@ def main():
         main_page()
     elif st.session_state.page == "quiz":
         display_quiz_page()
+
 
 if __name__ == "__main__":
     main()
