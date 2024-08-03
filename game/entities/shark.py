@@ -16,11 +16,11 @@ class Shark(Entity):
     def tick(self):
         self.ticks_till_move -= 1
         if self.ticks_till_move == 0:
-            self.ticks_till_move = 50 + rand.randint(0, 50)
-            if rand.random() < 0.3:
-                self.velocity = (0.2, 0.0)
-            elif 0.3 < rand.random() < 0.6:
-                self.velocity = (-0.2, 0.0)
+            self.ticks_till_move = 75 + rand.randint(0, 50)
+            if rand.random() < 0.4:
+                self.velocity = (0.3, 0.0)
+            elif 0.4 < rand.random() < 0.8:
+                self.velocity = (-0.3, 0.0)
             else:
                 self.velocity = (0.0, 0.02) if rand.random() < 0.5 else (0., -0.02)
         super().tick()
