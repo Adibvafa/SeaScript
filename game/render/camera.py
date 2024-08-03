@@ -4,7 +4,7 @@ import pygame as pg
 
 class Camera:
     pos: tuple[float, float]
-    scale: float = 50.0
+    scale: float = 75.0
     screen: pg.Surface
 
     def __init__(self, screen: pg.Surface, pos: tuple[float, float]):
@@ -13,6 +13,8 @@ class Camera:
 
     def move(self, dx: float, dy: float):
         self.pos = (self.pos[0] + dx, self.pos[1] + dy)
+        if self.pos[1] < 0:
+            self.pos = (self.pos[0], 0)
 
     def to_screen(self, pos: tuple[float, float]) -> tuple[int, int]:
         return (int((pos[0] - self.pos[0]) * self.scale) + self.screen.get_width() // 2,

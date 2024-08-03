@@ -8,7 +8,7 @@ screen: pg.Surface
 
 if __name__ == "__main__":
     pg.init()
-    screen = pg.display.set_mode((800, 600))
+    screen = pg.display.set_mode((1600, 900))
 
     player = Player((0, 0))
     world.add_entity(player)

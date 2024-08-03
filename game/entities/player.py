@@ -13,6 +13,8 @@ class Player(Entity):
 
     def move(self, dx: float, dy: float):
         self.pos = (self.pos[0] + dx, self.pos[1] + dy)
+        if self.pos[1] < 0:
+            self.pos = (self.pos[0], 0)
 
     def type(self) -> str:
         return "player"

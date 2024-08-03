@@ -29,9 +29,11 @@ class Entity(Drawable):
         screen.blit(texture, camera.to_screen(pos))
 
     def tick(self):
-        self.pos = (self.pos[0] + self.velocity[0], self.pos[1] + self.velocity[1])
-        if self.pos[1] < 0:
-            self.pos = (self.pos[0], 0)
+        new_pos = (self.pos[0] + self.velocity[0], self.pos[1] + self.velocity[1])
+        if new_pos[1] < 0:
+            new_pos = (new_pos[0], 0)
+        if new_pos != self.pos:
+            self.pos = new_pos
 
         # Velocity decay
         self.velocity = (self.velocity[0] * 0.95, self.velocity[1] * 0.95)

@@ -1,6 +1,7 @@
 import pygame as pg
 
-from game.entities.jelly_fish import JellyFish
+from game.entities.fish import Fish
+from game.entities.jellyfish import JellyFish
 from game.world import world
 from game.render import gradient
 from game.render.camera import Camera
@@ -35,8 +36,27 @@ def process_input(player: Player, camera: Camera):
 def loop(player: Player, screen: pg.Surface, camera: Camera):
     running = True
 
-    jelly_fish = JellyFish((2.0, 2.0), 1)
-    world.add_entity(jelly_fish)
+    jellyfish1 = JellyFish((2.0, 2.0), 1)
+    world.add_entity(jellyfish1)
+    jellyfish2 = JellyFish((3.0, 3.0), 2)
+    world.add_entity(jellyfish2)
+
+    # add fish
+    fish1 = (Fish((3.0, 3.0), 1))
+    world.add_entity(fish1)
+    fish2 = (Fish((4.0, 4.0), 2))
+    world.add_entity(fish2)
+    fish3 = (Fish((5.0, 5.0), 3))
+    world.add_entity(fish3)
+    fish4 = (Fish((6.0, 6.0), 4))
+    world.add_entity(fish4)
+    fish5 = (Fish((7.0, 7.0), 5))
+    world.add_entity(fish5)
+    fish6 = (Fish((8.0, 8.0), 6))
+    world.add_entity(fish6)
+
+
+
 
     # Create a clock object
     clock = pg.time.Clock()

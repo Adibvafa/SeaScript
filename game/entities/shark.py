@@ -1,8 +1,6 @@
 import pygame as pg
-
 from game.entities.entity import Entity
 import random as rand
-
 from game.render import textures
 
 
