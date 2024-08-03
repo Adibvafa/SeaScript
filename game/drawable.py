@@ -1,5 +1,5 @@
 import pygame as pg
-from camera import Camera
+from game.camera import Camera
 
 
 class Drawable:

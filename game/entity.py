@@ -1,7 +1,7 @@
 import pygame as pg
-from camera import Camera
+from game.camera import Camera
 from game.drawable import Drawable
-import textures
+import game.textures as textures
 
 
 class Entity(Drawable):
@@ -15,8 +15,11 @@ class Entity(Drawable):
     def type(self) -> str:
         pass
 
+    def texture(self) -> pg.Surface:
+        return textures.find_texture(self.type())
+
     def draw(self, screen: pg.Surface, camera: Camera):
-        texture = textures.find_texture(self.type())
+        texture = self.texture()
         # resize image to scale
         size = camera.scale_pos(self.size)
         texture = pg.transform.scale(texture, size)

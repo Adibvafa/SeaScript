@@ -1,7 +1,10 @@
+from enum import Enum
 
-from enum import Enum, auto
 
-class Tiles(Enum):
-    EMPTY = auto()
-    SEA_FLOOR = auto()
-    BORDER = auto()
+class Tile(Enum):
+    EMPTY = ()
+    SAND = ()
+    BORDER = ()
+
+    def __init__(self, solid: bool = False):
+        self.solid = solid

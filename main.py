@@ -1,8 +1,8 @@
 import pygame as pg
-import game_loop
+import game.game_loop as game_loop
 from game import world
 from game.camera import Camera
-from game.player import Player
+from game.entities.player import Player
 
 screen: pg.Surface
 
@@ -14,4 +14,4 @@ if __name__ == "__main__":
     world.add_entity(player)
     camera = Camera(screen, (0, 0))
 
-    game_loop.loop(screen, camera)
+    game_loop.loop(player, screen, camera)

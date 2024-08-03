@@ -5,7 +5,7 @@ _textures = {}
 
 def _load_texture(name: str) -> pg.Surface:
     if name not in _textures:
-        _textures[name] = pg.image.load(f"textures/{name}.png")
+        _textures[name] = pg.image.load(f"game/textures/{name}.png")
     return _textures[name]
 
 
