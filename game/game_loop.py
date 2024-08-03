@@ -1,9 +1,9 @@
 import pygame as pg
 
-from game import world, gradient
-from game.camera import Camera
+from game.world import world
+from game.render import gradient
+from game.render.camera import Camera
 from game.entities.player import Player
-
 
 keyboard_state = {
     pg.K_w: False,
@@ -11,6 +11,7 @@ keyboard_state = {
     pg.K_a: False,
     pg.K_d: False
 }
+
 
 def process_input(player: Player, camera: Camera):
     speed = 0.1
@@ -32,10 +33,7 @@ def process_input(player: Player, camera: Camera):
 
 def loop(player: Player, screen: pg.Surface, camera: Camera):
     running = True
-
-    player2 = Player((1, 1))
-    world.add_entity(player2)
-
+    
     # Create a clock object
     clock = pg.time.Clock()
 

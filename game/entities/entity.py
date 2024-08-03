@@ -1,7 +1,7 @@
 import pygame as pg
-from game.camera import Camera
-from game.drawable import Drawable
-import game.textures as textures
+from game.render.camera import Camera
+from game.render.drawable import Drawable
+import game.render.textures as textures
 
 
 class Entity(Drawable):

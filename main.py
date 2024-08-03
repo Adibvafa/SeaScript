@@ -1,7 +1,7 @@
 import pygame as pg
 import game.game_loop as game_loop
-from game import world
-from game.camera import Camera
+from game.world import world
+from game.render.camera import Camera
 from game.entities.player import Player
 
 screen: pg.Surface

@@ -1,13 +1,13 @@
-from game import textures
-from game.entity import Entity
-from game.tiles import Tile
+from game.render import textures
+from game.entities.entity import Entity
+from game.world.tiles import Tile
 import pygame as pg
 
 map_width = 100
 map_height = 50
 
 entities: list[Entity] = []
-tiles: list[list[Tile]] = [[Tile.EMPTY for _ in range(map_height)] for _ in range(map_width)]  # map_width x map_height
+tiles: list[list[Tile]] = [[Tile.SAND for _ in range(map_height)] for _ in range(map_width)]  # map_width x map_height
 
 
 def add_entity(entity: Entity):
@@ -23,15 +23,6 @@ def draw_entities(screen, camera):
         entity.draw(screen, camera)
 
 
-def draw_tile(screen, camera, x: int, y: int):
-    if x < 0 or y < 0 or x >= map_width or y >= map_height:
-        return
-    tile = tiles[x][y]
-    texture = textures.find_texture(f"tile_{tile.name.lower()}")
-    texture = pg.transform.scale(texture, (camera.scale + 2, camera.scale + 2))
-    screen.blit(texture, camera.to_screen((x, y)))
-
-
 def draw_tiles(screen: pg.Surface, camera):
     camera_width_tiles = int(screen.get_size()[0] // camera.scale) + 2
     camera_height_tiles = int(screen.get_size()[1] // camera.scale) + 2
@@ -39,4 +30,9 @@ def draw_tiles(screen: pg.Surface, camera):
     print(camera_height_tiles * camera_width_tiles)
     for x in range(camera_width_tiles):
         for y in range(camera_height_tiles):
-            draw_tile(screen, camera, int(top_left[0]) + x - 1, int(top_left[1]) + y - 1)
+            real_x = int(top_left[0]) + x
+            real_y = int(top_left[1]) + y
+            if real_x < 0 or real_y < 0 or real_x >= map_width or real_y >= map_height:
+                continue
+            tile = tiles[real_x][real_y]
+            tile.draw(screen, camera, real_x, real_y)

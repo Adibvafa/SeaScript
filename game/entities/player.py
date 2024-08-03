@@ -1,7 +1,7 @@
 import pygame as pg
 
-from game import textures
-from game.entity import Entity
+from game.render import textures
+from game.entities.entity import Entity
 
 
 class Player(Entity):
