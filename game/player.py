@@ -1,6 +1,14 @@
-class Player():
-    def __init__(self, pos: tuple[float, float]):
-        self.pos = pos
+from camera import Camera
+import pygame as pg
 
-    def __str__(self):
-        return f'Player {self.name} is {self.age} years old'
+from game.drawable import Drawable
+
+
+class Player(Camera, Drawable):
+
+    def __init__(self, pos: tuple[float, float]):
+        super().__init__(pos)
+
+    def move(self, dx: float, dy: float):
+        self.pos = (self.pos[0] + dx, self.pos[1] + dy)
+

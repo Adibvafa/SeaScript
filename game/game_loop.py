@@ -1,5 +1,6 @@
 import pygame as pg
 
+
 def loop():
     running = True
     while running:
