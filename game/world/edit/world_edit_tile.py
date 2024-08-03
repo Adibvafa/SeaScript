@@ -7,6 +7,9 @@ import pygame as pg
 selected_tile: Tile | None = None
 
 
+history: list[list[list[Tile]]] = []
+
+
 def cycle_tile():
     global selected_tile
     members = list(Tile)
@@ -33,3 +36,37 @@ def place_tile(camera: Camera, map_width: int, map_height: int):
         y = int(mouse_world_pos[1])
         if 0 <= x < map_width and 0 <= y < map_height:
             world.tiles[x][y] = selected_tile
+
+
+def fill_tile(camera: Camera, map_width: int, map_height: int):
+    global selected_tile
+    if selected_tile is None:
+        return
+
+    mouse_world_pos = camera.to_world(pg.mouse.get_pos())
+    real_x = int(mouse_world_pos[0])
+    real_y = int(mouse_world_pos[1])
+
+    queue = [(real_x, real_y)]
+
+    def fill_next():
+        (x, y) = queue.pop()
+        if 0 <= x < map_width and 0 <= y < map_height:
+            curr_tile = world.tiles[x][y]
+            if curr_tile != Tile.EMPTY:
+                return
+            world.tiles[x][y] = selected_tile
+            queue.append((x + 1, y))
+            queue.append((x - 1, y))
+            queue.append((x, y + 1))
+            queue.append((x, y - 1))
+
+    history.append([row.copy() for row in world.tiles])
+
+    while len(queue) > 0:
+        fill_next()
+
+
+def undo():
+    if history:
+        world.tiles = history.pop()
