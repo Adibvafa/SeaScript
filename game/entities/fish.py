@@ -10,7 +10,7 @@ class Fish(Entity):
     ticks_till_move: int = 50 + rand.randint(0, 50)
 
     def __init__(self, pos: tuple[float, float], texture_type: int):
-        super().__init__(pos, (1.0, 1.0))
+        super().__init__(pos, (1.5, 1.5))
         self.texture_type = texture_type
 
     def type(self) -> str:

@@ -9,7 +9,7 @@ class Player(Entity):
     last_move_right: bool = True
 
     def __init__(self, pos: tuple[float, float]):
-        super().__init__(pos, (2.0, 2.0))
+        super().__init__(pos, (2.5, 2.5))
 
     def move(self, dx: float, dy: float):
         self.pos = (self.pos[0] + dx, self.pos[1] + dy)

@@ -6,12 +6,18 @@ from game.world import world
 from game.render import gradient
 from game.render.camera import Camera
 from game.entities.player import Player
+from game.world.edit import world_edit_tile
 
 keyboard_state = {
     pg.K_w: False,
     pg.K_s: False,
     pg.K_a: False,
     pg.K_d: False
+}
+
+click_state = {
+    pg.BUTTON_LEFT: False,
+    pg.BUTTON_RIGHT: False
 }
 
 
@@ -55,9 +61,6 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
     fish6 = (Fish((8.0, 8.0), 6))
     world.add_entity(fish6)
 
-
-
-
     # Create a clock object
     clock = pg.time.Clock()
 
@@ -72,6 +75,14 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
             elif event.type == pg.KEYUP:
                 if event.key in keyboard_state:
                     keyboard_state[event.key] = False
+                if event.key == pg.K_SPACE:
+                    world_edit_tile.cycle_tile()
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                if event.button in click_state:
+                    click_state[event.button] = True
+            elif event.type == pg.MOUSEBUTTONUP:
+                if event.button in click_state:
+                    click_state[event.button] = False
 
         process_input(player, camera)
 
@@ -85,6 +96,9 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
         world.tick_entities()
         world.draw_tiles(screen, camera)
         world.draw_entities(screen, camera)
+        if click_state[pg.BUTTON_LEFT]:
+            world_edit_tile.place_tile(camera, world.map_width, world.map_height)
+        world_edit_tile.draw(screen, camera)
 
         pg.display.flip()
 

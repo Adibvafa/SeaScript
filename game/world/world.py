@@ -7,7 +7,7 @@ map_width = 100
 map_height = 50
 
 entities: list[Entity] = []
-tiles: list[list[Tile]] = [[Tile.THICK_SAND for _ in range(map_height)] for _ in range(map_width)]
+tiles: list[list[Tile]] = [[Tile.EMPTY for _ in range(map_height)] for _ in range(map_width)]
 
 
 def add_entity(entity: Entity):
@@ -39,4 +39,9 @@ def draw_tiles(screen: pg.Surface, camera):
             if real_x < 0 or real_y < 0 or real_x >= map_width or real_y >= map_height:
                 continue
             tile = tiles[real_x][real_y]
+            if tile == Tile.EMPTY:
+                continue
             tile.draw(screen, camera, real_x, real_y)
+
+
+def save_map(file: str):
