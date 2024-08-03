@@ -1,7 +1,10 @@
 import pygame as pg
 
+from game import world, main
+from game.camera import Camera
 
-def loop():
+
+def loop(screen: pg.Surface, camera: Camera):
     running = True
     while running:
         for event in pg.event.get():
@@ -9,4 +12,6 @@ def loop():
                 running = False
 
         # Draw game state
+        world.draw_entities(screen, camera)
+
         pg.display.flip()
