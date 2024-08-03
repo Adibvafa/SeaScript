@@ -9,6 +9,5 @@ def loop():
                 running = False
 
 
-        # Update game state
         # Draw game state
         pg.display.flip()

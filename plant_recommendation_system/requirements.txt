@@ -1,5 +1,0 @@
-streamlit
-opencv-python
-numpy
-Pillow
-scikit-learn
