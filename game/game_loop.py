@@ -1,5 +1,6 @@
 import pygame as pg
 
+from game.entities.jelly_fish import JellyFish
 from game.world import world
 from game.render import gradient
 from game.render.camera import Camera
@@ -33,7 +34,10 @@ def process_input(player: Player, camera: Camera):
 
 def loop(player: Player, screen: pg.Surface, camera: Camera):
     running = True
-    
+
+    jelly_fish = JellyFish((2.0, 2.0), 1)
+    world.add_entity(jelly_fish)
+
     # Create a clock object
     clock = pg.time.Clock()
 
@@ -58,6 +62,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
         bottom_colour = (13, 40, 56)
 
         gradient.draw_vertical_gradient(screen, top_colour, bottom_colour)
+        world.tick_entities()
         world.draw_tiles(screen, camera)
         world.draw_entities(screen, camera)
 

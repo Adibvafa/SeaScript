@@ -7,7 +7,7 @@ map_width = 100
 map_height = 50
 
 entities: list[Entity] = []
-tiles: list[list[Tile]] = [[Tile.SAND for _ in range(map_height)] for _ in range(map_width)]  # map_width x map_height
+tiles: list[list[Tile]] = [[Tile.THICK_SAND for _ in range(map_height)] for _ in range(map_width)]
 
 
 def add_entity(entity: Entity):
@@ -16,6 +16,11 @@ def add_entity(entity: Entity):
 
 def remove_entity(entity: Entity):
     entities.remove(entity)
+
+
+def tick_entities():
+    for entity in entities:
+        entity.tick()
 
 
 def draw_entities(screen, camera):
