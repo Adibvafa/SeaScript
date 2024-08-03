@@ -42,6 +42,3 @@ def draw_tiles(screen: pg.Surface, camera):
             if tile == Tile.EMPTY:
                 continue
             tile.draw(screen, camera, real_x, real_y)
-
-
-def save_map(file: str):

@@ -4,15 +4,14 @@ import random as rand
 from game.render import textures
 
 
-class JellyFish(Entity):
-    ticks_till_move: int = 50
+class Shark(Entity):
+    ticks_till_move: int = 50 + rand.randint(0, 50)
 
-    def __init__(self, pos: tuple[float, float], texture_type: int):
-        super().__init__(pos, (1.5, 1.5))
-        self.texture_type = texture_type
+    def __init__(self, pos: tuple[float, float]):
+        super().__init__(pos, (5, 3))
 
     def type(self) -> str:
-        return "jellyfish"
+        return "shark"
 
     def tick(self):
         self.ticks_till_move -= 1
@@ -22,4 +21,4 @@ class JellyFish(Entity):
         super().tick()
 
     def texture(self) -> pg.Surface:
-        return textures.find_texture(f"jellyfish{self.texture_type}")
+        return textures.find_texture("shark")

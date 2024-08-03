@@ -1,5 +1,3 @@
-import random
-
 import pygame as pg
 from game.entities.entity import Entity
 import random as rand

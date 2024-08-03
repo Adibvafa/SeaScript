@@ -2,6 +2,7 @@ import pygame as pg
 
 from game.entities.fish import Fish
 from game.entities.jellyfish import JellyFish
+from game.entities.shark import Shark
 from game.world import world
 from game.render import gradient
 from game.render.camera import Camera
@@ -42,6 +43,7 @@ def process_input(player: Player, camera: Camera):
 def loop(player: Player, screen: pg.Surface, camera: Camera):
     running = True
 
+    # add jellyfish
     jellyfish1 = JellyFish((2.0, 2.0), 1)
     world.add_entity(jellyfish1)
     jellyfish2 = JellyFish((3.0, 3.0), 2)
@@ -60,6 +62,10 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
     world.add_entity(fish5)
     fish6 = (Fish((8.0, 8.0), 6))
     world.add_entity(fish6)
+
+    # add shark
+    shark = (Shark((9.0, 9.0)))
+    world.add_entity(shark)
 
     # Create a clock object
     clock = pg.time.Clock()
