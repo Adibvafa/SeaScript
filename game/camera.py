@@ -1,6 +1,7 @@
 
 import pygame as pg
 
+
 class Camera:
     pos: tuple[float, float]
     scale: float = 20.0
