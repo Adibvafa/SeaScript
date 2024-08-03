@@ -63,6 +63,7 @@ def process_quiz_answers(sunlight, watering, size):
 
     st.session_state.page = "main"
 
+
 def main():
     st.set_page_config(layout="wide")
     st.markdown(get_styles(), unsafe_allow_html=True)
