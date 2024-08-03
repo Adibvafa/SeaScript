@@ -28,6 +28,9 @@ class Entity(Drawable):
         pos = (self.pos[0] - self.size[0] / 2, self.pos[1] - self.size[1] / 2)
         screen.blit(texture, camera.to_screen(pos))
 
+    def move(self, dx: float, dy: float):
+        vec
+
     def tick(self):
         new_pos = (self.pos[0] + self.velocity[0], self.pos[1] + self.velocity[1])
         if new_pos[1] < 0:
