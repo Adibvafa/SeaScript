@@ -4,83 +4,106 @@ import tempfile
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
+from bson.int64 import Int64
+
+# Load environment variables
 load_dotenv()
 
-def handle_grading(func_name, func_source):
-    mongo_uri = os.getenv("mongodb_uri")
-    database_name = "matlab"
-    collection_name = "matlab"
-
-    model_answer, model_input = get_model_answer_and_input(mongo_uri, database_name, collection_name, func_name)
-
-    if model_answer != None and model_input != None:
-        return evaluate_matlab_function(func_source, func_name, model_answer, model_input)
-    # raise "No model answer found" # Commented out for demo
-    return True, None
+# Database constants
+MONGO_URI = os.getenv("mongodb_uri")
+DATABASE_NAME = "matlab"
+COLLECTION_NAME = "matlab"
 
 
-def get_model_answer_and_input(mongo_uri, database_name, collection_name, func_name_value):
-    client = MongoClient(mongo_uri)
+def grade_matlab_function(func_name, user_input):
+    """
+    Main function to handle the grading of a MATLAB function.
+    """
+    question_data = fetch_question_data(func_name)
     
-    # Access the database
-    db = client.get_database(database_name)
-    
-    # Access the collection
-    collection = db[collection_name]
-    
-    # Query the collection for the item with the specific func_name key
-    query = {"id": func_name_value}
-    item = collection.find_one(query)
-    
-    # Get the model_answer attribute
-    if item:
-        model_answer = item.get("answer")
-        model_input = item.get("test")
-        return model_answer, model_input
-    else:
-        return None, None
+    print(f"Grading function '{func_name}' with user input")
 
+    if question_data:
+        return evaluate_matlab_function(user_input.strip(), func_name, question_data['answer'], question_data['input'])
+    
+    print(f"Warning: No question data found for function '{func_name}'")
+    return False, None
 
-def evaluate_matlab_function(matlab_func_str, func_name, model_answer, *args):
-    # Start MATLAB engine
+def fetch_question_data(func_name):
+    """
+    Fetch the question data (answer and input) for a given function from the database.
+    """
+    client = MongoClient(MONGO_URI)
+    db = client[DATABASE_NAME]
+    collection = db[COLLECTION_NAME]
+
+    print(f"Searching for function: {func_name}")
+    query = {"function": func_name}
+    question_data = collection.find_one(query)
+    print(f"Query result: {question_data}")
+    
+    if question_data:
+        return {
+            "answer": convert_to_python_type(question_data.get("answer")),
+            "input": convert_to_python_type(question_data.get("input"))
+        }
+    return None
+
+def convert_to_python_type(value):
+    """
+    Convert MongoDB types to Python types.
+    """
+    if isinstance(value, Int64):
+        return int(value)
+    elif isinstance(value, list):
+        return [convert_to_python_type(item) for item in value]
+    elif isinstance(value, dict):
+        return {k: convert_to_python_type(v) for k, v in value.items()}
+    return value
+
+def evaluate_matlab_function(user_input, func_name, expected_answer, function_input):
+    """
+    Evaluate a MATLAB function by comparing its output to the expected answer.
+    """
     eng = matlab.engine.start_matlab()
     
     try:
-        # Create a temporary directory
         with tempfile.TemporaryDirectory() as temp_dir:
-            # Create a temporary .m file with the function code
             file_path = os.path.join(temp_dir, f"{func_name}.m")
             with open(file_path, 'w') as f:
-                f.write(matlab_func_str)
+                f.write(user_input)
             
-            # Add the temporary directory to MATLAB's path
             eng.addpath(temp_dir)
-            
-            # Get the MATLAB function
             matlab_func = getattr(eng, func_name)
             
-            # Execute the MATLAB function
-            result = matlab_func(*args)
+            result = matlab_func(function_input)
             
-            # Convert result to numpy array if it's a MATLAB array
             if isinstance(result, matlab.double):
-                result = np.array(result)
+                result = np.array(result).flatten()[0]  # Convert to scalar if possible
             
-            # Compare the result with the model answer
-            if isinstance(model_answer, (list, np.ndarray)):
-                is_correct = np.allclose(result, model_answer)
+            if isinstance(expected_answer, (list, np.ndarray)):
+                is_correct = np.allclose(result, expected_answer)
             else:
-                is_correct = np.isclose(result, model_answer)
+                is_correct = np.isclose(result, expected_answer)
             
             return is_correct, result
 
-    except:
+    except Exception as e:
+        print(f"Error evaluating function '{func_name}': {str(e)}")
         return False, None
     
     finally:
-        # Stop MATLAB engine
         eng.quit()
 
 
 if __name__ == "__main__":
-    handle_grading("1", "sin")
+    # Example usage
+    func_name = "jellyfish"  # This is the function name in your database
+    user_input = """
+    function y = jellyfish(x)
+        y = 1;
+    end
+    """
+    is_correct, result = grade_matlab_function(func_name, user_input)
+    print(f"Function '{func_name}' evaluation result: {'Correct' if is_correct else 'Incorrect'}")
+    print(f"Output: {result}")
