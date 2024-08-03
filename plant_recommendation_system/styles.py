@@ -52,7 +52,7 @@ def get_styles():
         padding: 15px 40px;
         border-radius: 20px;
         cursor: pointer;
-        font-size: 22px;
+        font-size: 30px;
         font-family: 'Lobster', cursive;
         width: 100%;
         max-width: 300px;

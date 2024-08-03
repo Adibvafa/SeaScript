@@ -7,7 +7,7 @@ from styles import get_styles
 
 def main_page():
     st.markdown('<div class="title">🌸 Plant Recommendation System 🌿</div>', unsafe_allow_html=True)
-    st.markdown('<div class="subtitle">Capture or Upload a Photo of Your Room 📸</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle"><br>Capture or Upload a Photo of Your Room 📸</div>', unsafe_allow_html=True)
 
     photo_file = st.camera_input("Take a photo of your room")
 
