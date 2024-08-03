@@ -21,5 +21,5 @@ class Entity(Drawable):
         size = camera.scale_pos(self.size)
         texture = pg.transform.scale(texture, size)
         # draw image
-        screen.blit(texture, camera.to_screen(self.pos))
-
+        pos = (self.pos[0] - self.size[0] / 2, self.pos[1] - self.size[1] / 2)
+        screen.blit(texture, camera.to_screen(pos))
