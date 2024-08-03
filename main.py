@@ -5,11 +5,8 @@ from image_processing import load_and_preprocess_image, detect_windows_and_calcu
 from plant_recommendation import suggest_plants
 from styles import get_styles
 
-
 def main_page():
-    st.markdown(get_styles(), unsafe_allow_html=True)
-    st.markdown('<div class="main-container">', unsafe_allow_html=True)
-    st.markdown('<div class="title">🌸 UwU Plant Recommendation System 🌿</div>', unsafe_allow_html=True)
+    st.markdown('<div class="title">🌸 Plant Recommendation System 🌿</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">Capture or Upload a Photo of Your Room 📸</div>', unsafe_allow_html=True)
 
     photo_file = st.camera_input("Take a photo of your room")
@@ -28,15 +25,9 @@ def main_page():
         else:
             st.warning("Please capture or upload a photo first. 🛑")
 
-    st.markdown('</div>', unsafe_allow_html=True)
-
-
 def display_quiz_page():
-    st.markdown(get_styles(), unsafe_allow_html=True)
-    st.markdown('<div class="quiz-container">', unsafe_allow_html=True)
     st.markdown('<div class="question">✨ Quiz Time! ✨</div>', unsafe_allow_html=True)
-    st.markdown('<div class="question">Answer the following questions to get plant suggestions 💬</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="question">Answer the following questions to get plant suggestions 💬</div>', unsafe_allow_html=True)
 
     with st.form(key='quiz_form'):
         sunlight = st.text_input("How much sunlight does your room get? ☀️", key="sunlight")
@@ -51,10 +42,8 @@ def display_quiz_page():
             else:
                 st.write("Please answer all the questions. 🛑")
 
-    st.markdown('</div>', unsafe_allow_html=True)
-
-
 def process_quiz_answers(sunlight, watering, size):
+    st.write("🌟 Based on your photo and quiz responses, here are some plant suggestions: 🌟")
     image_cv = load_and_preprocess_image(st.session_state.image)
     cfg_path = "yolov3.cfg"
     weights_path = "yolov3.weights"
@@ -74,16 +63,19 @@ def process_quiz_answers(sunlight, watering, size):
 
     st.session_state.page = "main"
 
-
 def main():
+    st.set_page_config(layout="wide")
+    st.markdown(get_styles(), unsafe_allow_html=True)
+
     if 'page' not in st.session_state:
         st.session_state.page = "main"
 
-    if st.session_state.page == "main":
-        main_page()
-    elif st.session_state.page == "quiz":
-        display_quiz_page()
-
+    # Single container for all content
+    with st.container():
+        if st.session_state.page == "main":
+            main_page()
+        elif st.session_state.page == "quiz":
+            display_quiz_page()
 
 if __name__ == "__main__":
     main()
