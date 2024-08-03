@@ -30,6 +30,9 @@ class Entity(Drawable):
 
     def tick(self):
         self.pos = (self.pos[0] + self.velocity[0], self.pos[1] + self.velocity[1])
+        if self.pos[1] < 0:
+            self.pos = (self.pos[0], 0)
+
         # Velocity decay
         self.velocity = (self.velocity[0] * 0.95, self.velocity[1] * 0.95)
         if abs(self.velocity[0]) < 0.01:

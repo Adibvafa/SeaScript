@@ -15,6 +15,5 @@ class Tile(Enum):
 
     def draw(self, screen, camera, x: int, y: int):
         texture = textures.find_texture(f"tile_{self.name.lower()}")
-        print(f'Drawing {self.name} at {x}, {y}')
         texture = pg.transform.scale(texture, (camera.scale + 2, camera.scale + 2))
         screen.blit(texture, camera.to_screen((x, y)))
