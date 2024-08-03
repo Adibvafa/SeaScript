@@ -122,7 +122,7 @@ class SeaThemedGameScreen(QMainWindow):
         
         # Layout setup
         right_layout = QVBoxLayout()
-        right_layout.addWidget(self.editor, 10)
+        right_layout.addWidget(self.editor, 12)
         
         feedback_and_submit = QHBoxLayout()
         feedback_and_submit.addWidget(self.feedback_area, 1)
@@ -130,8 +130,8 @@ class SeaThemedGameScreen(QMainWindow):
         
         right_layout.addLayout(feedback_and_submit, 1)
         
-        main_layout.addWidget(question_widget, 1)
-        main_layout.addLayout(right_layout, 1)
+        main_layout.addWidget(question_widget, 5)
+        main_layout.addLayout(right_layout, 4)
         
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
@@ -139,19 +139,14 @@ class SeaThemedGameScreen(QMainWindow):
     def on_submit(self):
         submitted_text = self.editor.text()
         if submitted_text.strip() == self.answer:
-            self.feedback_area.setHtml(f'<p style="font-weight: bold; font-size: 18px;">Nice job! Your next puzzle piece is <i>"{self.next_piece}"</i></p>')
+            self.feedback_area.setHtml(f'<p style="font-weight: bold; font-size: 18px;">Amazing! Puzzle piece is <i>"{self.next_piece}"</i></p>')
         else:
-            self.feedback_area.setHtml('<p style="font-weight: bold; font-size: 18px;">Try again. Your solution isn\'t quite right yet.</p>')
+            self.feedback_area.setHtml('<p style="font-weight: bold; font-size: 18px;">No! Your solution isn\'t quite right yet.</p>')
 
     # These properties would be set when initializing the class
     @property
     def question(self):
-        return """# Jellyfish Swimming Hours\nDid you know? Some jellyfish species can't swim at night because they rely on visual cues to navigate. Let's help our gelatinous friends figure out when they can take a dip!\n## Your Mission\nWrite a MATLAB function `can_jellyfish_swim(hour)` that determines if our jellyfish can swim based on the hour of the day.\n### Function Specifications:\n- Input: `hour` (0-23, representing 24-hour time)\n- Output: 1 if the jellyfish can swim, 0 if it can't\n- Assume jellyfish can swim from 6:00 AM to 6:00 PM (hours 6 to 18 inclusive)\n### Example:
-        >> can_jellyfish_swim(12)
-        ans = 1  % Noon? Swim time!\n
-        >> can_jellyfish_swim(22)
-        ans = 0  % 10 PM? Better rest those tentacles.
-        """
+        return "# Jellyfish Swimming Hours\n\nDid you know? Some jellyfish species can't swim at night because they rely on visual cues to navigate. Let's help our gelatinous friends figure out when they can take a dip!\n\n## Your Mission\n\nWrite a MATLAB function `can_jellyfish_swim(hour)` that determines if our jellyfish can swim based on the hour of the day.\n\n### Function Specifications:\n- Input: `hour` (0-23, representing 24-hour time)\n- Output: 1 if the jellyfish can swim, 0 if it can't\n- Assume jellyfish can swim from 6:00 AM to 6:00 PM (hours 6 to 18 inclusive)\n\n### Example:\n`>> can_jellyfish_swim(12)`\n\n`ans = 1  % Noon? Swim time!`\n\n`>> can_jellyfish_swim(22)`\n\n`ans = 0  % 10 PM? Better rest those tentacles.`\n"
 
     @property
     def answer(self):
