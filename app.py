@@ -5,11 +5,13 @@ import os
 from PIL import Image
 from sklearn.cluster import KMeans
 
+
 # Define functions for image processing
 def load_and_preprocess_image(image):
     image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
     image = cv2.resize(image, (640, 480))  # Resize for consistency
     return image
+
 
 def detect_windows_and_calculate_light(image):
     cfg_path = "yolov3.cfg"
@@ -19,7 +21,7 @@ def detect_windows_and_calculate_light(image):
         raise FileNotFoundError("YOLO configuration or weight files not found. Please check the file paths.")
 
     net = cv2.dnn.readNetFromDarknet(cfg_path, weights_path)
-    
+
     layer_names = net.getLayerNames()
     output_layer_indices = net.getUnconnectedOutLayers() - 1
     output_layers = [layer_names[i] for i in output_layer_indices]
@@ -49,30 +51,33 @@ def detect_windows_and_calculate_light(image):
                                     h = int(obj[3] * height)
                                     window_area = w * h
                                     total_window_area += window_area
-                                    cv2.rectangle(image, (center_x - w // 2, center_y - h // 2), (center_x + w // 2, center_y + h // 2), (0, 255, 0), 2)
+                                    cv2.rectangle(image, (center_x - w // 2, center_y - h // 2),
+                                                  (center_x + w // 2, center_y + h // 2), (0, 255, 0), 2)
 
     return image, total_window_area
+
 
 def analyze_colors(image, k=3):
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image_rgb = image_rgb.reshape((image_rgb.shape[0] * image_rgb.shape[1], 3))
-    
+
     kmeans = KMeans(n_clusters=k)
     kmeans.fit(image_rgb)
     colors = kmeans.cluster_centers_
-    
+
     return colors
+
 
 def suggest_plants(sunlight, watering, size, window_area, dominant_colors):
     plant_suggestions = []
-    
+
     if window_area > 100000:
         plant_suggestions.append("Fiddle Leaf Fig 🌿")
         plant_suggestions.append("Snake Plant 🌵")
     else:
         plant_suggestions.append("ZZ Plant 🪴")
         plant_suggestions.append("Pothos 🍃")
-    
+
     if dominant_colors[0][0] > 200:
         plant_suggestions.append("Peace Lily 🌸")
 
@@ -80,21 +85,22 @@ def suggest_plants(sunlight, watering, size, window_area, dominant_colors):
         plant_suggestions.append("Fiddle Leaf Fig 🌿")
     else:
         plant_suggestions.append("ZZ Plant 🪴")
-        
+
     if watering.lower() in ["weekly", "bi-weekly"]:
         plant_suggestions.append("Pothos 🍃")
     else:
         plant_suggestions.append("Cactus 🌵")
-        
+
     if size.lower() in ["small", "medium"]:
         plant_suggestions.append("Peace Lily 🌸")
     else:
         plant_suggestions.append("Rubber Plant 🌳")
-    
+
     plant_suggestions = list(set(plant_suggestions))
     plant_suggestions.sort()
-    
+
     return plant_suggestions
+
 
 def main_page():
     st.markdown("""
@@ -158,6 +164,7 @@ def main_page():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
+
 def display_quiz_page():
     st.markdown("""
     <style>
@@ -192,7 +199,8 @@ def display_quiz_page():
 
     st.markdown('<div class="quiz-container">', unsafe_allow_html=True)
     st.markdown('<div class="question">✨ Quiz Time! ✨</div>', unsafe_allow_html=True)
-    st.markdown('<div class="question">Answer the following questions to get plant suggestions 💬</div>', unsafe_allow_html=True)
+    st.markdown('<div class="question">Answer the following questions to get plant suggestions 💬</div>',
+                unsafe_allow_html=True)
 
     with st.form(key='quiz_form'):
         sunlight = st.text_input("How much sunlight does your room get? ☀️", key="sunlight")
@@ -206,9 +214,9 @@ def display_quiz_page():
                 image_cv = load_and_preprocess_image(st.session_state.image)
                 image_with_windows, total_window_area = detect_windows_and_calculate_light(image_cv)
                 dominant_colors = analyze_colors(image_with_windows)
-                
+
                 plant_suggestions = suggest_plants(sunlight, watering, size, total_window_area, dominant_colors)
-                
+
                 st.write("🌟 Based on your photo and quiz responses, here are some plant suggestions: 🌟")
                 for plant in plant_suggestions:
                     st.write(f"- {plant}")
@@ -219,6 +227,7 @@ def display_quiz_page():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
+
 # Initialize session state for page navigation
 if 'page' not in st.session_state:
     st.session_state.page = "main"
@@ -228,4 +237,3 @@ if st.session_state.page == "main":
     main_page()
 elif st.session_state.page == "quiz":
     display_quiz_page()
-
