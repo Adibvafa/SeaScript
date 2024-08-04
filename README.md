@@ -1,4 +1,4 @@
-# 🦈 SeeScript 🌊
+# 🪼 SeeScript 🪸
 
 ## About
 SeeScript is a fin-tastic, gamified approach to learning MATLAB. In an ocean of boring tutorials, SeeScript swims ahead by making the learning process engaging and interactive.
