@@ -25,10 +25,10 @@ def render(screen: pg.Surface, camera: Camera):
         if not ent.interacted_with:
             distance = ((ent.pos[0] - camera.pos[0]) ** 2 + (ent.pos[1] - camera.pos[1]) ** 2) ** 0.5
             if distance < 6 ** 2:
-                txt = f'Press "E" to interact with {ent.type().name.lower()}'
+                txt = f'Press "E" to interact with {ent.type().name.lower()}'.replace('_', ' ')
                 text = font.render(txt, True, (255, 255, 255))
                 ent_screen = camera.to_screen(ent.pos)
-                text_pos = (ent_screen[0] - text.get_width() / 2, ent_screen[1] - ent.size[1] * camera.scale - text.get_height() + 10)
+                text_pos = (ent_screen[0] - text.get_width() / 2, ent_screen[1] - ent.size[1] * camera.scale - text.get_height() + 150)
                 screen.blit(text, text_pos)
 
     goal_pos = camera.to_screen(goal)

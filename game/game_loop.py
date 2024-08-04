@@ -27,7 +27,7 @@ click_state = {
 
 
 def process_input(player: Player, camera: Camera):
-    speed = 0.38
+    speed = 0.28
     if keyboard_state[pg.K_w]:
         player.move(0, -speed)
     if keyboard_state[pg.K_s]:
