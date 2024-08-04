@@ -42,7 +42,10 @@ pip install -r requirements.txt
 
 ### Launching SeeScript
 Ready to make waves? Run the following command:
-`bash python3 main.py`
+
+```python
+python3 main.py
+```
 
 ## How to Play
 Dive into the depths of SeeScript's oceanic world:
