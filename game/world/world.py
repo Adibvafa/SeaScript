@@ -3,6 +3,7 @@ from game.entities.fish import Fish
 from game.entities.spawn_point import SpawnPoint
 from game.render import textures
 from game.entities.entity import Entity
+from game.world.particle.particle import Particle
 from game.world.tiles import Tile
 import random as rand
 
@@ -15,6 +16,7 @@ entities: list[Entity] = []
 world_objects: list[WorldObject] = []
 tiles: list[list[Tile]] = [[Tile.EMPTY for _ in range(map_height)] for _ in range(map_width)]
 spawns: list[SpawnPoint] = []
+particles: list[Particle] = []
 
 
 def add_entity(entity: Entity):
@@ -28,6 +30,16 @@ def remove_entity(entity: Entity):
 def tick_entities():
     for entity in entities:
         entity.tick()
+
+
+def tick_particles():
+    remove = []
+    for particle in particles:
+        particle.tick()
+        if particle.should_remove:
+            remove.append(particle)
+    for particle in remove:
+        particles.remove(particle)
 
 
 def spawn_random_fish():

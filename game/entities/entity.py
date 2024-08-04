@@ -41,6 +41,10 @@ class Entity(Drawable):
     def texture(self) -> pg.Surface:
         return textures.find_texture(self.type().name.lower())
 
+    def hitbox(self):
+        return Box2d(Vec2d(self.pos[0] - self.size[0] / 2, self.pos[1] - self.size[1] / 2), Vec2d(self.size[0],
+                                                                                                  self.size[1]))
+
     def draw(self, screen: pg.Surface, camera: Camera):
         texture = self.texture()
         # resize image to scale

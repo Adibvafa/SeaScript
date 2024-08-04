@@ -1,5 +1,5 @@
 from math import sqrt, inf
-
+import random as rand
 
 class Vec2d:
     def __init__(self, x: float, y: float):
@@ -137,6 +137,12 @@ class Box2d:
         return Vec2d(
             max(self.min.x, min(point.x, self.max.x)),
             max(self.min.y, min(point.y, self.max.y))
+        )
+
+    def random_point(self) -> Vec2d:
+        return Vec2d(
+            rand.uniform(self.min.x, self.max.x),
+            rand.uniform(self.min.y, self.max.y)
         )
 
     def __repr__(self):
