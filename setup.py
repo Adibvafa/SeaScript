@@ -1,3 +1,4 @@
+import certifi
 import matlab.engine
 from pymongo import MongoClient
 import os
@@ -13,7 +14,7 @@ def setup_resources():
     COLLECTION_NAME = "matlab"
 
     # Create MongoDB client and get collection
-    mongo_client = MongoClient(MONGO_URI)
+    mongo_client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
     db = mongo_client[DATABASE_NAME]
     collection = db[COLLECTION_NAME]
 

@@ -7,7 +7,7 @@ from game.entities.KingShark import KingShark
 from game.objective.objective import init_objectives
 from game.qa import qa
 from game.world import world
-from game.render import world_renderer, gradient_renderer, coord_renderer, depth_renderer
+from game.render import world_renderer, gradient_renderer, coord_renderer, depth_renderer, objective_renderer
 from game.render.camera import Camera
 from game.entities.player import Player
 from game.world.edit import world_edit_tile, world_edit_wo
@@ -89,6 +89,10 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
                     world_edit_tile.fill_tile(camera, world.map_width, world.map_height)
                 if event.key == pg.K_z:
                     world_edit_wo.undo()
+                if event.key == pg.K_e:
+                    closest_objective_entity = objective.get_closest_objective_entity(player)
+                    if closest_objective_entity is not None:
+                        closest_objective_entity.interact(player)
                 # Add volume control
                 if event.key == pg.K_UP:
                     set_volume(min(pg.mixer.music.get_volume() + 0.1, 1.0))
@@ -114,6 +118,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
         world_edit_wo.draw(screen, camera)
         coord_renderer.render(screen, camera)
         depth_renderer.render(screen, camera)
+        objective_renderer.render(screen, camera)
 
         # Render border
         border_top_left = camera.to_screen((0, 0))

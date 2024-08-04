@@ -19,4 +19,23 @@ def render(screen: pg.Surface, camera: Camera):
     if goal is None:
         return
 
+    from game.objective.objective import ObjectiveInteract
+    if isinstance(current_objective, ObjectiveInteract):
+        ent = current_objective.entity
+        if not ent.interacted_with:
+            distance = ((ent.pos[0] - camera.pos[0]) ** 2 + (ent.pos[1] - camera.pos[1]) ** 2) ** 0.5
+            if distance < 6 ** 2:
+                txt = f'Press "E" to interact with {ent.type().name.lower()}'
+                text = font.render(txt, True, (255, 255, 255))
+                ent_screen = camera.to_screen(ent.pos)
+                text_pos = (ent_screen[0] - text.get_width() / 2, ent_screen[1] - ent.size[1] * camera.scale - text.get_height() + 10)
+                screen.blit(text, text_pos)
+
     goal_pos = camera.to_screen(goal)
+    if 0 <= goal_pos[0] <= screen.get_width() and 0 <= goal_pos[1] <= screen.get_height():
+        return
+
+    goal_pos_clamped = (max(0, min(screen.get_width() - 20, goal_pos[0])),
+                        max(0, min(screen.get_height() - 20, goal_pos[1])))
+
+    pg.draw.circle(screen, (255, 0, 0), goal_pos_clamped, 10)

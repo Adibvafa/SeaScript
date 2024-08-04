@@ -1,6 +1,7 @@
 from game.entities.entity import Entity
 from game.entities.player import Player
 from game.qa import qa
+from game.world import world
 
 
 class ObjectiveEntity(Entity):
@@ -24,6 +25,9 @@ class ChallengeEntity(ObjectiveEntity):
         self.challenge_num = challenge_num
 
     def interact(self, player: Player):
+        if self.interacted_with:
+            return
+        self.interacted_with = True
         player.freeze_movement = True
         qa.open_challenge(self.challenge_num, lambda: on_complete(player))
 
@@ -42,6 +46,8 @@ class Objective:
 
 
 class ObjectiveInteract(Objective):
+
+    entity: ObjectiveEntity
 
     def __init__(self, description: str, entity: ObjectiveEntity):
         super().__init__(description)
@@ -72,8 +78,25 @@ objectives = []
 def init_objectives():
     from game.entities.QueenJelly import QueenJelly
     queen_jelly = QueenJelly((25.0, 50.0))
+    from game.entities.KingShark import KingShark
+    king_sharky = KingShark((150.0, 100.0))
+    from game.entities.blank import BlankChallengeEntity
+    blank = BlankChallengeEntity((180.0, 160.0))
+    from game.entities.chest import Chest
+    chest = Chest((239.0, 182.0))
+    world.add_entity(queen_jelly)
+    world.add_entity(king_sharky)
+    world.add_entity(blank)
+    world.add_entity(chest)
     objectives.append(ObjectiveInteract("Find the Queen Jellyfish", queen_jelly))
     objectives.append(ObjectiveCompleteChallenge(0))
+    objectives.append(ObjectiveInteract("Find the King Shark", king_sharky))
+    objectives.append(ObjectiveCompleteChallenge(1))
+    objectives.append(ObjectiveInteract("Find the Blank Challenge", blank))
+    objectives.append(ObjectiveCompleteChallenge(2))
+    objectives.append(ObjectiveInteract("Find the Chest", chest))
+    objectives.append(ObjectiveCompleteChallenge(3))
+
 
 
 def check_objectives():
@@ -88,4 +111,17 @@ def get_current_objective() -> Objective | None:
     for objective in objectives:
         if not objective.completed:
             return objective
+    return None
+
+
+def get_closest_objective_entity(player: Player) -> ObjectiveEntity | None:
+    entities = [e for e in world.entities if isinstance(e, ObjectiveEntity)]
+    if len(entities) == 0:
+        return None
+    entities.sort(key=lambda e: (e.pos[0] - player.pos[0]) ** 2 + (e.pos[1] - player.pos[1]) ** 2)
+    nearest = entities[0]
+    curr_obj = get_current_objective()
+    if isinstance(curr_obj, ObjectiveInteract) and curr_obj.entity == nearest:
+        return nearest
+
     return None

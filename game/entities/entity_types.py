@@ -10,3 +10,4 @@ class EntityType(Enum):
     ANGLER = auto()
     QUEEN_JELLYFISH = auto()
     KING_SHARK = auto()
+    CORAL_REEF = auto()
