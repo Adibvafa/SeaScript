@@ -4,7 +4,7 @@ from game.entities.fish import Fish
 from game.entities.jellyfish import JellyFish
 from game.entities.shark import Shark
 from game.world import world
-from game.render import gradient, world_renderer, gradient_renderer, coord_renderer
+from game.render import world_renderer, gradient_renderer, coord_renderer
 from game.render.camera import Camera
 from game.entities.player import Player
 from game.world.edit import world_edit_tile, world_edit_wo

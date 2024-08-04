@@ -269,6 +269,7 @@ class SeaThemedGameScreen(QMainWindow):
     def next_piece(self):
         return self.STEPS[self.step + 1] if self.step + 1 < len(self.STEPS) else "END"
 
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 

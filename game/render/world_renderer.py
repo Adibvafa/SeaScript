@@ -1,3 +1,4 @@
+from game.render.camera import Camera
 from game.world.tiles import Tile
 import game.world.world as world
 import pygame as pg
@@ -7,6 +8,7 @@ def render(screen, camera):
     draw_tiles(screen, camera)
     draw_world_objects(screen, camera)
     draw_entities(screen, camera)
+    draw_particles(screen, camera)
 
 
 def draw_entities(screen, camera):
@@ -35,3 +37,8 @@ def draw_tiles(screen: pg.Surface, camera):
             if tile == Tile.EMPTY:
                 continue
             tile.draw(screen, camera, real_x, real_y)
+
+
+def draw_particles(screen: pg.Surface, camera: Camera):
+    for particle in world.particles:
+        particle.draw(screen, camera)

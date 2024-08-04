@@ -6,3 +6,4 @@ class EntityType(Enum):
     PLAYER = auto()
     JELLYFISH = auto()
     SHARK = auto()
+    CHEST = auto()
