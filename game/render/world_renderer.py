@@ -16,7 +16,9 @@ def draw_entities(screen, camera):
 
 def draw_world_objects(screen, camera):
     for world_object in world.world_objects:
-        world_object.draw(screen, camera)
+        dist = (world_object.pos[0] - camera.pos[0]) ** 2 + (world_object.pos[1] - camera.pos[1]) ** 2
+        if dist < (screen.get_size()[0] / camera.scale) ** 2 * 2:
+            world_object.draw(screen, camera)
 
 
 def draw_tiles(screen: pg.Surface, camera):
