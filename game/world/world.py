@@ -2,8 +2,8 @@ from game.entities.entity_types import EntityType
 from game.entities.fish import Fish
 from game.entities.jellyfish import JellyFish
 from game.entities.shark import Shark
+from game.entities.angler import Angler
 from game.entities.spawn_point import SpawnPoint
-from game.render import textures
 from game.entities.entity import Entity
 from game.world.particle.particle import Particle
 from game.world.tiles import Tile
@@ -51,7 +51,8 @@ def spawn_random_fish():
 
     num_fish = 400
     num_jellyfish = 175
-    num_sharks = 10
+    num_sharks = 20
+    num_anglers = 10
 
     for _ in range(num_fish):
         pos = (rand.randint(0, map_width - 1), rand.randint(0, map_height - 1))
@@ -87,7 +88,7 @@ def spawn_random_fish():
         add_entity(jellyfish)
 
     for _ in range(num_sharks):
-        pos = (rand.randint(0, map_width - 1), rand.randint(60, 120))
+        pos = (rand.randint(0, map_width - 1), rand.randint(90, 120))
         shark = Shark((float(pos[0]), float(pos[1])))
         tile_list = colliding_tiles(shark.hitbox(), tiles)
 
@@ -96,6 +97,15 @@ def spawn_random_fish():
 
         add_entity(shark)
 
+    for _ in range(num_anglers):
+        pos = (rand.randint(180, map_width - 1), rand.randint(160, 180))
+        angler = Angler((float(pos[0]), float(pos[1])))
+        tile_list = colliding_tiles(angler.hitbox(), tiles)
+
+        if any([tiles[x][y].is_solid() for x, y in tile_list]):
+            continue
+
+        add_entity(angler)
 
 
 def save_map(file: str):
