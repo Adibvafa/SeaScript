@@ -283,7 +283,7 @@ if __name__ == "__main__":
     grader = MatlabGrader(matlab_engine, collection, mongo_client)
 
     # Create and show the main window
-    window = SeaThemedGameScreen(grader, step=3)
+    window = SeaThemedGameScreen(grader, step=0)
     window.show()
 
     # Run the application

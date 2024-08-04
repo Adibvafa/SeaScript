@@ -44,7 +44,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
     running = True
 
     qa.init_qa()
-    qa.window.hide()
+    # qa.window.hide()
 
     init_objectives()
 
@@ -87,7 +87,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
                 if event.key == pg.K_z:
                     world_edit_wo.undo()
                 if event.key == pg.K_e:
-                    qa.open_challenge(0, lambda: None)
+                    qa.open_challenge(len(qa.completed_challenges), lambda: None)
                 # Add volume control
                 if event.key == pg.K_UP:
                     set_volume(min(pg.mixer.music.get_volume() + 0.1, 1.0))
