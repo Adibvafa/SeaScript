@@ -9,6 +9,7 @@ from game.render import world_renderer, gradient_renderer, coord_renderer, depth
 from game.render.camera import Camera
 from game.entities.player import Player
 from game.world.edit import world_edit_tile, world_edit_wo
+from game.music.music import initialize_music, stop_music, set_volume  # Import the new music functions
 
 keyboard_state = {
     pg.K_w: False,
@@ -21,7 +22,6 @@ click_state = {
     pg.BUTTON_LEFT: False,
     pg.BUTTON_RIGHT: False
 }
-
 
 def process_input(player: Player, camera: Camera):
     speed = 0.1
@@ -37,9 +37,12 @@ def process_input(player: Player, camera: Camera):
         player.last_move_right = True
     camera.pos = player.pos
 
-
 def loop(player: Player, screen: pg.Surface, camera: Camera):
     running = True
+
+    # Initialize music
+    initialize_music()
+    set_volume(0.5)  # Set initial volume to 50%
 
     # add jellyfish
     jellyfish1 = JellyFish((2.0, 2.0), 1)
@@ -87,6 +90,11 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
                     world_edit_wo.undo()
                 if event.key == pg.K_e:
                     world_edit_wo.erase(camera)
+                # Add volume control
+                if event.key == pg.K_UP:
+                    set_volume(min(pg.mixer.music.get_volume() + 0.1, 1.0))
+                if event.key == pg.K_DOWN:
+                    set_volume(max(pg.mixer.music.get_volume() - 0.1, 0.0))
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button in click_state:
                     click_state[event.button] = True
@@ -103,8 +111,6 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
 
         gradient_renderer.render(screen, camera)
         world_renderer.render(screen, camera)
-        # if click_state[pg.BUTTON_LEFT]:
-        #     world_edit_tile.place_tile(camera, world.map_width, world.map_height)
         world_edit_wo.draw(screen, camera)
         coord_renderer.render(screen, camera)
         depth_renderer.render(screen, camera)
@@ -118,6 +124,8 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
         pg.display.flip()
 
         # Control the frame rate
-        clock.tick(50)  # 100 frames per second (every 10ms)
+        clock.tick(50)  # 50 frames per second
 
+    # Stop the music when the game ends
+    stop_music()
     pg.quit()
