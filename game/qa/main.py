@@ -267,7 +267,7 @@ class SeaThemedGameScreen(QMainWindow):
 
     @property
     def next_piece(self):
-        return self.STEPS[self.step + 1] if self.step + 1 < len(self.STEPS) else "END"
+        return self.matlab_grader.fetch_puzzle_piece(self.STEPS[self.step])
 
 
 if __name__ == "__main__":
@@ -278,7 +278,7 @@ if __name__ == "__main__":
     grader = MatlabGrader(matlab_engine, collection, mongo_client)
 
     # Create and show the main window
-    window = SeaThemedGameScreen(grader, step=0)
+    window = SeaThemedGameScreen(grader, step=3)
     window.show()
 
     # Run the application

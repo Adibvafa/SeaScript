@@ -21,7 +21,8 @@ class MatlabGrader:
         if question_data:
             return {
                 "question": question_data.get("question", ""),
-                "test": question_data.get("test", [])
+                "test": question_data.get("test", []),
+                "puzzle_piece": question_data.get("puzzle_piece", "")
             }
         return None
 
@@ -31,6 +32,13 @@ class MatlabGrader:
         """
         question_data = self.fetch_question_data(func_name)
         return question_data["question"] if question_data else "END"
+
+    def fetch_puzzle_piece(self, func_name):
+        """
+        Fetch the puzzle piece.
+        """
+        question_data = self.fetch_question_data(func_name)
+        return question_data["puzzle_piece"] if question_data else "END"
 
     def convert_to_matlab(self, value, func_name):
         """
