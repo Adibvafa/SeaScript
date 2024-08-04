@@ -4,7 +4,7 @@ from game.entities.fish import Fish
 from game.entities.jellyfish import JellyFish
 from game.entities.shark import Shark
 from game.world import world
-from game.render import gradient, world_renderer
+from game.render import gradient, world_renderer, gradient_renderer
 from game.render.camera import Camera
 from game.entities.player import Player
 from game.world.edit import world_edit_tile, world_edit_wo
@@ -23,7 +23,7 @@ click_state = {
 
 
 def process_input(player: Player, camera: Camera):
-    speed = 0.1
+    speed = 1.0
     if keyboard_state[pg.K_w]:
         player.move(0, -speed)
     if keyboard_state[pg.K_s]:
@@ -81,6 +81,8 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
                     world_edit_tile.fill_tile(camera, world.map_width, world.map_height)
                 if event.key == pg.K_z:
                     world_edit_wo.undo()
+                if event.key == pg.K_e:
+                    world_edit_wo.erase(camera)
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button in click_state:
                     click_state[event.button] = True
@@ -92,13 +94,9 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
         process_input(player, camera)
 
         # Draw game state
-        depth = player.pos[1]
-        normalized_depth = depth / 100.0
-        top_colour = (52, 168, 235)
-        bottom_colour = (13, 40, 56)
-
-        gradient.draw_vertical_gradient(screen, top_colour, bottom_colour)
         world.tick_entities()
+
+        gradient_renderer.render()
         world_renderer.render(screen, camera)
         # if click_state[pg.BUTTON_LEFT]:
         #     world_edit_tile.place_tile(camera, world.map_width, world.map_height)

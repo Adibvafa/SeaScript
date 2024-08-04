@@ -40,3 +40,17 @@ def place_wo(camera: Camera, map_width: int, map_height: int):
 def undo():
     if len(placed_wo) > 0:
         world.world_objects.remove(placed_wo.pop())
+
+
+def erase(camera: Camera):
+    mouse_world_pos = camera.to_world(pg.mouse.get_pos())
+    closest = None
+    closest_dist = float("inf")
+    for wo in world.world_objects:
+        dist = (wo.pos[0] - mouse_world_pos[0]) ** 2 + (wo.pos[1] - mouse_world_pos[1]) ** 2
+        if dist < closest_dist:
+            closest = wo
+            closest_dist = dist
+    if closest is not None:
+        world.world_objects.remove(closest)
+        placed_wo.remove(closest)
