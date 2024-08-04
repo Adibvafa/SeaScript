@@ -2,6 +2,7 @@ import math
 
 import pygame as pg
 
+from game.entities.entity_types import EntityType
 from game.math.vectors import Vec2d, Box2d
 from game.render.camera import Camera
 from game.render.drawable import Drawable
@@ -34,11 +35,11 @@ class Entity(Drawable):
         self.pos = pos
         self.size = size
 
-    def type(self) -> str:
+    def type(self) -> EntityType:
         pass
 
     def texture(self) -> pg.Surface:
-        return textures.find_texture(self.type())
+        return textures.find_texture(self.type().name.lower())
 
     def draw(self, screen: pg.Surface, camera: Camera):
         texture = self.texture()

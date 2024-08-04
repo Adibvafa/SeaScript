@@ -1,8 +1,9 @@
+from game.entities.entity_types import EntityType
 from game.entities.fish import Fish
+from game.entities.spawn_point import SpawnPoint
 from game.render import textures
 from game.entities.entity import Entity
 from game.world.tiles import Tile
-import pygame as pg
 import random as rand
 
 from game.world.world_objects import WorldObject, WorldObjectType
@@ -13,6 +14,7 @@ map_height = 200
 entities: list[Entity] = []
 world_objects: list[WorldObject] = []
 tiles: list[list[Tile]] = [[Tile.EMPTY for _ in range(map_height)] for _ in range(map_width)]
+spawns: list[SpawnPoint] = []
 
 
 def add_entity(entity: Entity):
@@ -69,6 +71,10 @@ def save_map(file: str):
         for world_object in world_objects:
             f.write(f"{world_object.object_type.name} {world_object.pos[0]} {world_object.pos[1]}\n")
 
+        f.write(f"{len(spawns)}\n")
+        for spawn in spawns:
+            f.write(f"{spawn.entity_type.name} {spawn.pos[0]} {spawn.pos[1]}\n")
+
 
 def load_map(file: str):
     global map_width, map_height, tiles, world_objects
@@ -85,3 +91,12 @@ def load_map(file: str):
         for _ in range(num_objects):
             object_type, x, y = f.readline().split()
             world_objects.append(WorldObject(WorldObjectType[object_type], (float(x), float(y))))
+
+        potential_fish_spawn_num = f.readline()
+        if len(potential_fish_spawn_num) == 0:
+            return
+
+        num_spawns = int(potential_fish_spawn_num)
+        for _ in range(num_spawns):
+            entity_type, x, y = f.readline().split()
+            spawns.append(SpawnPoint(EntityType[entity_type], (float(x), float(y))))

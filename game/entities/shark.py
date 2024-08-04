@@ -1,6 +1,8 @@
 import pygame as pg
 from game.entities.entity import Entity
 import random as rand
+
+from game.entities.entity_types import EntityType
 from game.render import textures
 
 
@@ -10,8 +12,8 @@ class Shark(Entity):
     def __init__(self, pos: tuple[float, float]):
         super().__init__(pos, (5, 3))
 
-    def type(self) -> str:
-        return "shark"
+    def type(self) -> EntityType:
+        return EntityType.SHARK
 
     def tick(self):
         self.ticks_till_move -= 1

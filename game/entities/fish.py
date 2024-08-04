@@ -1,6 +1,8 @@
 import pygame as pg
 from game.entities.entity import Entity
 import random as rand
+
+from game.entities.entity_types import EntityType
 from game.render import textures
 
 
@@ -11,8 +13,8 @@ class Fish(Entity):
         super().__init__(pos, (2, 1.5))
         self.texture_type = texture_type
 
-    def type(self) -> str:
-        return "fish"
+    def type(self) -> EntityType:
+        return EntityType.FISH
 
     def tick(self):
         self.ticks_till_move -= 1
