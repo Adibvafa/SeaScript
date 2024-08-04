@@ -32,7 +32,13 @@ class Vec2d:
         return Vec2d(self.x / length, self.y / length)
 
     def coerce_in(self, min_val, max_val):
-        return max(min_val, min(self, max_val))
+        return Vec2d(
+            max(min(self.x, max_val.x), min_val.x),
+            max(min(self.y, max_val.y), min_val.y)
+        )
+
+    def __neg__(self):
+        return Vec2d(-self.x, -self.y)
 
     def __repr__(self):
         return f"Vec2d({self.x}, {self.y})"

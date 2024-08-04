@@ -1,7 +1,7 @@
 import pygame as pg
 
 from game.entities.entity_types import EntityType
-from game.math.vectors import Vec2d
+from game.math.vectors import Vec2d, Box2d
 from game.render import textures
 from game.entities.entity import Entity
 import random as rand
@@ -27,7 +27,10 @@ class Player(Entity):
         super().tick()
         if rand.random() > 0.1:
             return
-        particle_pos = self.hitbox().random_point()
+
+        left_corner = (self.pos[0] - self.size[0] / 3, self.pos[1] - self.size[1] / 3)
+        box_size = (self.size[0] / 3 * 2, self.size[1] / 3 * 2)
+        particle_pos = Box2d(Vec2d(left_corner[0], left_corner[1]), Vec2d(box_size[0], box_size[1])).random_point()
         world.particles.append(BubbleParticle((particle_pos.x, particle_pos.y), (0, -0.1)))
 
 

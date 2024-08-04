@@ -1,3 +1,5 @@
+import math
+
 from game.render import textures
 from game.render.camera import Camera
 from game.render.drawable import Drawable
@@ -42,10 +44,13 @@ class BubbleParticle(Particle):
 
     def texture(self) -> pg.Surface:
         texture = textures.find_texture("particle_bubble")
-        if (self.tick_num / 25) % 2 == 0:
+        if (self.tick_num // 15) % 2 == 0:
             texture = pg.transform.rotate(texture, 90)
         return texture
 
     def tick(self):
         super().tick()
         self.tick_num += 1
+        size_x = math.sin(self.tick_num * math.pi * 2 / 35) * 0.075 + 0.25
+        size_y = math.sin(self.tick_num * math.pi * 2 / 35) * 0.075 + 0.25
+        self.size = (size_x, size_y)

@@ -79,6 +79,14 @@ class Entity(Drawable):
         final_dy = min_col_time_y * delta.y - (math.copysign(0.0001, delta.y) if delta.y != 0 else 0)
 
         self.pos = (self.pos[0] + final_dx, self.pos[1] + final_dy)
+        if self.pos[0] < 0:
+            self.pos = (0, self.pos[1])
+        if self.pos[1] < 0:
+            self.pos = (self.pos[0], 0)
+        if self.pos[0] > world.map_width:
+            self.pos = (world.map_width, self.pos[1])
+        if self.pos[1] > world.map_height:
+            self.pos = (self.pos[0], world.map_height)
 
     def tick(self):
         self.move(self.velocity[0], self.velocity[1])

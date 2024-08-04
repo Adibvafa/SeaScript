@@ -95,6 +95,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
 
         # Draw game state
         world.tick_entities()
+        world.tick_particles()
 
         gradient_renderer.render(screen, camera)
         world_renderer.render(screen, camera)
