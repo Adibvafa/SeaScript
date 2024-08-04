@@ -5,6 +5,7 @@ from game.render import textures
 from game.entities.entity import Entity
 from game.world.particle.particle import Particle
 from game.world.tiles import Tile
+from game.entities.entity import colliding_tiles
 import random as rand
 
 from game.world.world_objects import WorldObject, WorldObjectType
@@ -50,24 +51,30 @@ def spawn_random_fish():
     num_jellyfish = 50
 
     for _ in range(num_fish):
+        fish_type = rand.choice(fish_types)
         pos = (rand.randint(0, map_width - 1), rand.randint(0, map_height - 1))
-        tile = tiles[pos[0]][pos[1]]
-        if tile.is_solid():
+        fish = Fish((float(pos[0]), float(pos[1])), fish_type)
+
+        tile_list = colliding_tiles(fish.hitbox(), tiles)
+
+        # If any are solid, don't spawn
+        if any([tiles[x][y].is_solid() for x, y in tile_list]):
             continue
 
-        fish_type = rand.choice(fish_types)
-        fish = Fish((float(pos[0]), float(pos[1])), fish_type)
         add_entity(fish)
 
     for _ in range(num_jellyfish):
         pos = (rand.randint(0, map_width - 1), rand.randint(0, map_height - 1))
-        tile = tiles[pos[0]][pos[1]]
-
-        if tile.is_solid():
-            continue
 
         jellyfish_type = rand.choice(jellyfish_types)
         jellyfish = Fish((float(pos[0]), float(pos[1])), jellyfish_type)
+
+        tile_list = colliding_tiles(jellyfish.hitbox(), tiles)
+
+        # If any are solid, don't spawn
+        if any([tiles[x][y].is_solid() for x, y in tile_list]):
+            continue
+
         add_entity(jellyfish)
 
 

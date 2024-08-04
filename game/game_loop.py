@@ -4,7 +4,7 @@ from game.entities.fish import Fish
 from game.entities.jellyfish import JellyFish
 from game.entities.shark import Shark
 from game.world import world
-from game.render import world_renderer, gradient_renderer, coord_renderer
+from game.render import world_renderer, gradient_renderer, coord_renderer, depth_renderer
 from game.render.camera import Camera
 from game.entities.player import Player
 from game.world.edit import world_edit_tile, world_edit_wo
@@ -23,7 +23,7 @@ click_state = {
 
 
 def process_input(player: Player, camera: Camera):
-    speed = 0.25
+    speed = 0.1
     if keyboard_state[pg.K_w]:
         player.move(0, -speed)
     if keyboard_state[pg.K_s]:
@@ -46,9 +46,6 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
     jellyfish2 = JellyFish((3.0, 3.0), 2)
     world.add_entity(jellyfish2)
 
-    # add fish
-    world.spawn_random_fish()
-
     # add shark
     shark = (Shark((9.0, 9.0)))
     world.add_entity(shark)
@@ -61,6 +58,9 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
         world.load_map("map.txt")
     except FileNotFoundError:
         print("Map file not found")
+
+    # add fish
+    world.spawn_random_fish()
 
     while running:
         for event in pg.event.get():
@@ -103,6 +103,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
         #     world_edit_tile.place_tile(camera, world.map_width, world.map_height)
         world_edit_wo.draw(screen, camera)
         coord_renderer.render(screen, camera)
+        depth_renderer.render(screen, camera)
 
         # Render border
         border_top_left = camera.to_screen((0, 0))
