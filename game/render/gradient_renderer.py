@@ -1,4 +1,5 @@
 from game.render import gradient
+from game.world import world
 
 
 def clamp_colour(colour: tuple[int, int, int]) -> tuple[int, int, int]:
@@ -7,7 +8,7 @@ def clamp_colour(colour: tuple[int, int, int]) -> tuple[int, int, int]:
             max(0, min(255, colour[2])))
 
 
-def render(screen, camera, world):
+def render(screen, camera):
     top_colour = (32, 98, 155)
     bottom_colour = (5, 15, 40)
     diff = (bottom_colour[0] - top_colour[0], bottom_colour[1] - top_colour[1], bottom_colour[2] - top_colour[2])

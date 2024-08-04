@@ -45,7 +45,7 @@ def undo():
 def erase(camera: Camera):
     mouse_world_pos = camera.to_world(pg.mouse.get_pos())
     closest = None
-    closest_dist = float("inf")
+    closest_dist = 10000000
     for wo in world.world_objects:
         dist = (wo.pos[0] - mouse_world_pos[0]) ** 2 + (wo.pos[1] - mouse_world_pos[1]) ** 2
         if dist < closest_dist:

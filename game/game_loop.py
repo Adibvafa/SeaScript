@@ -96,7 +96,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
         # Draw game state
         world.tick_entities()
 
-        gradient_renderer.render()
+        gradient_renderer.render(screen, camera)
         world_renderer.render(screen, camera)
         # if click_state[pg.BUTTON_LEFT]:
         #     world_edit_tile.place_tile(camera, world.map_width, world.map_height)
