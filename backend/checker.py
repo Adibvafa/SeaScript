@@ -14,6 +14,7 @@ MONGO_URI = os.getenv("mongodb_uri")
 DATABASE_NAME = "matlab"
 COLLECTION_NAME = "matlab"
 
+
 def grade_matlab_function(func_name, user_input):
     """
     Main function to handle the grading of a MATLAB function.
@@ -44,23 +45,18 @@ def fetch_question_data(func_name):
         }
     return None
 
-def convert_to_matlab(eng, value):
+def convert_to_matlab(eng, value, func_name):
     """
-    Convert Python values to MATLAB compatible types.
+    Convert Python values to MATLAB compatible types based on the function name.
     """
-    if isinstance(value, list):
-        if all(isinstance(item, str) for item in value):
-            return eng.cell(value)
-        elif all(isinstance(item, (int, float)) for item in value):
-            return matlab.double(value)
-        else:
-            return [convert_to_matlab(eng, item) for item in value]
-    elif isinstance(value, (int, float)):
-        return float(value)  # MATLAB uses doubles by default
-    elif isinstance(value, str):
-        return value
+    if func_name == "can_jellyfish_swim":
+        return float(value)
+    elif func_name == "count_familiar_sharks":
+        return [eng.cell(value[0]), eng.cell(value[1])]
+    elif func_name == "find_nemos_skyscraper":
+        return matlab.double(value)
     else:
-        raise ValueError(f"Unsupported type: {type(value)}")
+        raise ValueError(f"Unknown function: {func_name}")
 
 def evaluate_matlab_function(user_input, func_name, test_cases):
     """
@@ -84,13 +80,12 @@ def evaluate_matlab_function(user_input, func_name, test_cases):
                 input_value = test_case['input']
                 expected_output = test_case['output']
                 
-                # Handle both single values and arrays
-                if isinstance(input_value, list):
-                    matlab_input = [convert_to_matlab(eng, value) for value in input_value]
-                else:
-                    matlab_input = [convert_to_matlab(eng, input_value)]
+                matlab_input = convert_to_matlab(eng, input_value, func_name)
                 
-                result = matlab_func(*matlab_input)
+                if isinstance(matlab_input, list):
+                    result = matlab_func(*matlab_input)
+                else:
+                    result = matlab_func(matlab_input)
                 
                 if isinstance(result, matlab.double):
                     result = np.array(result).flatten()[0]  # Convert to scalar if possible
@@ -115,31 +110,49 @@ def evaluate_matlab_function(user_input, func_name, test_cases):
     finally:
         eng.quit()
 
-if __name__ == "__main__":
-    # Example usage
-    # func_name = "can_jellyfish_swim"
-    # user_input = """
-    # function result = can_jellyfish_swim(hour)
-    #     result = (hour >= 6 && hour <= 18);
-    # end
-    # """
-
-    func_name = "count_familiar_sharks"
-    user_input = """
-    function count = count_labeled_sharks(previous_sharks, new_sharks)
-        count = sum(ismember(new_sharks, previous_sharks));
-    end
-    """
-    
-    all_correct, results = grade_matlab_function(func_name, user_input)
+def print_results(func_name, all_correct, results):
     if results is not None:
         print(f"Function '{func_name}' evaluation result: {'All Correct' if all_correct else 'Some Incorrect'}")
         for idx, result in enumerate(results):
             print(f"Test case {idx + 1}:")
-            print(f"  Input: {result['input']}")
+            print(f"  Input:")
+            if func_name == "count_familiar_sharks":
+                print(f"    Known sharks: {result['input'][0]}")
+                print(f"    New sightings: {result['input'][1]}")
+            elif func_name == "find_nemos_skyscraper":
+                for row in result['input']:
+                    print(f"    {row}")
+            else:
+                print(f"    {result['input']}")
             print(f"  Expected: {result['expected']}")
             print(f"  Actual: {result['actual']}")
             print(f"  Correct: {'Yes' if result['correct'] else 'No'}")
             print()
     else:
         print("No results to display. An error occurred during evaluation.")
+
+
+if __name__ == "__main__":
+    # Example usage for each function
+    functions = [
+        ("can_jellyfish_swim", """
+        function result = can_jellyfish_swim(hour)
+            result = (hour >= 6 && hour <= 18);
+        end
+        """),
+        ("count_familiar_sharks", """
+        function count = count_familiar_sharks(known_sharks, new_sightings)
+            count = sum(ismember(new_sightings, known_sharks));
+        end
+        """),
+        ("find_nemos_skyscraper", """
+        function max_height = find_nemos_skyscraper(coral_city)
+            max_height = max(sum(coral_city));
+        end
+        """)
+    ]
+
+    for func_name, user_input in functions:
+        all_correct, results = grade_matlab_function(func_name, user_input)
+        print_results(func_name, all_correct, results)
+        print("\n" + "="*50 + "\n")
