@@ -30,6 +30,7 @@ class Entity(Drawable):
     pos: tuple[float, float]
     size: tuple[float, float]
     velocity: tuple[float, float] = (0, 0)
+    velocity_decay: float = 0.99
 
     def __init__(self, pos: tuple[float, float], size: tuple[float, float]):
         self.pos = pos
@@ -92,7 +93,7 @@ class Entity(Drawable):
         self.move(self.velocity[0], self.velocity[1])
 
         # Velocity decay
-        self.velocity = (self.velocity[0] * 0.99, self.velocity[1] * 0.99)
+        self.velocity = (self.velocity[0] * self.velocity_decay, self.velocity[1] * self.velocity_decay)
         if abs(self.velocity[0]) < 0.01:
             self.velocity = (0, self.velocity[1])
         if abs(self.velocity[1]) < 0.01:
