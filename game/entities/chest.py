@@ -5,10 +5,10 @@ import pygame as pg
 
 
 class Chest(Entity):
-    opened: bool = True
+    opened: bool = False
 
     def __init__(self, pos: tuple[float, float]):
-        super().__init__(pos, (1.5, 1.5))
+        super().__init__(pos, (4, 4))
 
     def type(self) -> EntityType:
         return EntityType.CHEST
