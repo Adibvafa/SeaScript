@@ -1,5 +1,6 @@
 import pygame as pg
 
+from game.entities.chest import Chest
 from game.entities.fish import Fish
 from game.entities.jellyfish import JellyFish
 from game.entities.shark import Shark
@@ -23,7 +24,7 @@ click_state = {
 
 
 def process_input(player: Player, camera: Camera):
-    speed = 0.25
+    speed = 5
     if keyboard_state[pg.K_w]:
         player.move(0, -speed)
     if keyboard_state[pg.K_s]:
@@ -45,6 +46,9 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
     world.add_entity(jellyfish1)
     jellyfish2 = JellyFish((3.0, 3.0), 2)
     world.add_entity(jellyfish2)
+
+    chest = Chest((239.0, 182.0))
+    world.add_entity(chest)
 
     # add fish
     world.spawn_random_fish()
