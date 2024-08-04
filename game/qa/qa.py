@@ -9,19 +9,16 @@ from setup import setup_resources
 
 window: SeaThemedGameScreen
 completed_challenges = []
-
+app = QApplication(sys.argv)
 
 def init_qa():
-    app = QApplication(sys.argv)
-
     # Initialize resources and create MatlabGrader instance
     matlab_engine, collection, mongo_client = setup_resources()
     grader = MatlabGrader(matlab_engine, collection, mongo_client)
 
     # Create and show the main window
     global window
-    window = SeaThemedGameScreen(grader, step=3)
-    app.exec()
+    window = SeaThemedGameScreen(grader, step=0)
 
 
 def _on_complete(other_callback: Callable):
@@ -36,3 +33,4 @@ def open_challenge(num: int, callback: Callable):
     window.update_question_html(window.question_widget)
     window.show()
     window.callback = lambda: _on_complete(callback)
+    app.exec()

@@ -69,7 +69,4 @@ objectives = []
 
 
 def init_objectives():
-    global objectives
-    objectives = [
-        ObjectiveInteract("Find the Queen Jellyfish", )
-    ]
+    pass

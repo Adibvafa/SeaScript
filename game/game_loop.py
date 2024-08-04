@@ -1,7 +1,7 @@
 import pygame as pg
 
 from game.entities.chest import Chest
-from game.objective.objective import objectives
+from game.objective.objective import init_objectives
 from game.qa import qa
 from game.world import world
 from game.render import world_renderer, gradient_renderer, coord_renderer, depth_renderer
@@ -46,7 +46,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
     qa.init_qa()
     qa.window.hide()
 
-    objectives.init_objectives()
+    init_objectives()
 
     # Initialize music
     initialize_music()
