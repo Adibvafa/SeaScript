@@ -27,8 +27,6 @@ def fetch_question(func_name):
     if question_data:
         return (question_data["question"])
     return "END"
-    
-print(MONGO_URI)
 
 def grade_matlab_function(func_name, user_input):
     """
