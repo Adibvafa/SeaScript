@@ -1,10 +1,10 @@
-# 🪼 SeeScript 🪸
+# 🪼 SeaScript 🪸
 
 ## About
-SeeScript is a fin-tastic, gamified approach to learning MATLAB. In an ocean of boring tutorials, SeeScript swims ahead by making the learning process engaging and interactive.
+SeaScript is a fin-tastic, gamified approach to learning MATLAB. In an ocean of boring tutorials, SeaScript swims ahead by making the learning process engaging and interactive.
 
 ## Overview
-SeeScript transforms MATLAB education into a jaw-some game experience. It's designed to help students, professionals, and enthusiasts surf the waves of MATLAB concepts through hands-on challenges, puzzles, and interactive scenarios.
+SeaScript transforms MATLAB education into a jaw-some game experience. It's designed to help students, professionals, and enthusiasts surf the waves of MATLAB concepts through hands-on challenges, puzzles, and interactive scenarios.
 
 ## Key Features
 - 🎣 Interactive coding challenges
@@ -13,8 +13,8 @@ SeeScript transforms MATLAB education into a jaw-some game experience. It's desi
 - 🐠 Instant feedback and explanations
 - 🏆 Gamified learning
 
-## Why SeeScript?
-Traditional methods of learning MATLAB can be as dry as a beached whale. SeeScript makes a splash by providing a fun, immersive environment where users can experiment, make mistakes, and learn in a risk-free reef.
+## Why SeaScript?
+Traditional methods of learning MATLAB can be as dry as a beached whale. SeaScript makes a splash by providing a fun, immersive environment where users can experiment, make mistakes, and learn in a risk-free reef.
 
 ## 🦈 Getting Started: Shark Attack! 🦈
 
@@ -25,11 +25,11 @@ Before diving in, make sure you have:
 3. Python 3.x installed
 
 ### Installation
-1. Clone the SeeScript repository:
+1. Clone the SeaScript repository:
 
 ```bash
-git clone https://github.com/your-repo/seescript.git
-cd seescript
+git clone https://github.com/your-repo/SeaScript.git
+cd SeaScript
 ```
 
 2. Install the required Python packages:
@@ -40,12 +40,15 @@ pip install -r requirements.txt
 
 3. Configure your MongoDB database connection.
 
-### Launching SeeScript
+### Launching SeaScript
 Ready to make waves? Run the following command:
-`bash python3 main.py`
+
+```python
+python3 main.py
+```
 
 ## How to Play
-Dive into the depths of SeeScript's oceanic world:
+Dive into the depths of SeaScript's oceanic world:
 
 1. 🏊♂️ Swim around the vibrant coral reefs of our MATLAB ecosystem
 2. 🐠 Get to know the local inhabitants - from friendly function fish to loopy lobsters
