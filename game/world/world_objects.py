@@ -10,13 +10,13 @@ from game.render.drawable import Drawable
 class WorldObjectType(Enum):
     SEAWEED = (1, (1.5, 3.0))
     SEAWEED_FLIPPED = (2, (1.5, 3.0))
-    CORAL = (3, (2.0, 3.0))
-    CORAL_FLIPPED = (4, (2.0, 3.0))
-    ROCK = (5, (1.0, 1.0))
-    ROCK_FLIPPED = (6, (1.0, 1.0))
-    CRAB = (7, (1.0, 1.0))
-    STARFISH1 = (8, (1.0, 1.0))
-    STARFISH2 = (9, (1.0, 1.0))
+    CORAL = (3, (2.5, 3.0))
+    CORAL_FLIPPED = (4, (2.5, 3.0))
+    ROCK = (5, (3.5, 1.5))
+    ROCK_FLIPPED = (6, (3.5, 1.5))
+    CRAB = (7, (2.0, 2.0))
+    STARFISH1 = (8, (1.5, 1.5))
+    STARFISH2 = (9, (1.5, 1.5))
 
     def __init__(self, idx: int, size: tuple[float, float]):
         self.size = size
