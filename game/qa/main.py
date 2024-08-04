@@ -5,6 +5,13 @@ from PyQt6.QtCore import Qt
 from PyQt6.Qsci import QsciScintilla, QsciLexerMatlab
 from PyQt6.QtGui import QColor, QFont, QPalette
 import markdown2
+import os
+
+backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../backend'))
+sys.path.append(backend_path)
+
+import checker
+
 
 class SeaThemedGameScreen(QMainWindow):
     def __init__(self):
@@ -23,6 +30,9 @@ class SeaThemedGameScreen(QMainWindow):
         # Main widget and layout
         main_widget = QWidget()
         main_layout = QHBoxLayout()
+
+        self.STEPS = ["can_jellyfish_swim", "count_familiar_sharks", "fine_nemos_skyscraper", "open_treasure_chest"]
+        self.step = 0
         
         # Question area (left side)
         question_widget = QWebEngineView()
@@ -138,7 +148,7 @@ class SeaThemedGameScreen(QMainWindow):
 
     def on_submit(self):
         submitted_text = self.editor.text()
-        if submitted_text.strip() == self.answer:
+        if checker.grade_matlab_function(self.STEPS[self.step], submitted_text.strip())[0]:
             self.feedback_area.setHtml(f'<p style="font-weight: bold; font-size: 18px;">Amazing! Puzzle piece is <i>"{self.next_piece}"</i></p>')
         else:
             self.feedback_area.setHtml('<p style="font-weight: bold; font-size: 18px;">No! Your solution isn\'t quite right yet.</p>')
@@ -146,15 +156,11 @@ class SeaThemedGameScreen(QMainWindow):
     # These properties would be set when initializing the class
     @property
     def question(self):
-        return "# Jellyfish Swimming Hours\n\nDid you know? Some jellyfish species can't swim at night because they rely on visual cues to navigate. Let's help our gelatinous friends figure out when they can take a dip!\n\n## Your Mission\n\nWrite a MATLAB function `can_jellyfish_swim(hour)` that determines if our jellyfish can swim based on the hour of the day.\n\n### Function Specifications:\n- Input: `hour` (0-23, representing 24-hour time)\n- Output: 1 if the jellyfish can swim, 0 if it can't\n- Assume jellyfish can swim from 6:00 AM to 6:00 PM (hours 6 to 18 inclusive)\n\n### Example:\n`>> can_jellyfish_swim(12)`\n\n`ans = 1  % Noon? Swim time!`\n\n`>> can_jellyfish_swim(22)`\n\n`ans = 0  % 10 PM? Better rest those tentacles.`\n"
-
-    @property
-    def answer(self):
-        return "A"
+        return checker.fetch_question(self.STEPS[self.step])
 
     @property
     def next_piece(self):
-        return "MAMAAAA"
+        return self.STEPS[self.step+1] if self.step+1 < len(self.STEPS) else "END"
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

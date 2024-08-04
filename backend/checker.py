@@ -9,10 +9,26 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Database constants
-MONGO_URI = os.getenv("mongodb_uri")
+MONGO_URI=os.getenv("mongodb_uri")
 DATABASE_NAME = "matlab"
 COLLECTION_NAME = "matlab"
 
+def fetch_question(func_name):
+    """
+    Fetch the question.
+    """
+    client = MongoClient(MONGO_URI)
+    db = client[DATABASE_NAME]
+    collection = db[COLLECTION_NAME]
+
+    query = {"function": func_name}
+    question_data = collection.find_one(query)
+    
+    if question_data:
+        return (question_data["question"])
+    return "END"
+    
+print(MONGO_URI)
 
 def grade_matlab_function(func_name, user_input):
     """
@@ -105,6 +121,7 @@ def evaluate_matlab_function(user_input, func_name, test_cases):
                 
                 if not is_correct:
                     all_correct = False
+                    return False, None
             
             return all_correct, results
 
@@ -156,6 +173,7 @@ if __name__ == "__main__":
     ]
 
     for func_name, user_input in functions:
+        fetch_question(func_name)
         all_correct, results = grade_matlab_function(func_name, user_input)
         print_results(func_name, all_correct, results)
         print("\n" + "="*50 + "\n")
