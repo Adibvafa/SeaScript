@@ -4,7 +4,6 @@ import tempfile
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
-from bson.objectid import ObjectId
 
 # Load environment variables
 load_dotenv()
@@ -55,6 +54,8 @@ def convert_to_matlab(eng, value, func_name):
         return [eng.cell(value[0]), eng.cell(value[1])]
     elif func_name == "find_nemos_skyscraper":
         return matlab.double(value)
+    elif func_name == "open_treasure_chest":
+        return []  # No input for this function
     else:
         raise ValueError(f"Unknown function: {func_name}")
 
@@ -77,20 +78,24 @@ def evaluate_matlab_function(user_input, func_name, test_cases):
             all_correct = True
 
             for test_case in test_cases:
-                input_value = test_case['input']
+                input_value = test_case.get('input')
                 expected_output = test_case['output']
                 
-                matlab_input = convert_to_matlab(eng, input_value, func_name)
+                matlab_input = convert_to_matlab(eng, input_value, func_name) if input_value is not None else []
                 
                 if isinstance(matlab_input, list):
                     result = matlab_func(*matlab_input)
                 else:
                     result = matlab_func(matlab_input)
                 
-                if isinstance(result, matlab.double):
+                if isinstance(result, matlab.logical):
+                    result = bool(result)
+                elif isinstance(result, matlab.double):
                     result = np.array(result).flatten()[0]  # Convert to scalar if possible
+                elif isinstance(result, str):
+                    result = result.strip()  # Remove any leading/trailing whitespace
                 
-                is_correct = np.isclose(result, expected_output)
+                is_correct = result == expected_output
                 results.append({
                     'input': input_value,
                     'expected': expected_output,
@@ -115,15 +120,8 @@ def print_results(func_name, all_correct, results):
         print(f"Function '{func_name}' evaluation result: {'All Correct' if all_correct else 'Some Incorrect'}")
         for idx, result in enumerate(results):
             print(f"Test case {idx + 1}:")
-            print(f"  Input:")
-            if func_name == "count_familiar_sharks":
-                print(f"    Known sharks: {result['input'][0]}")
-                print(f"    New sightings: {result['input'][1]}")
-            elif func_name == "find_nemos_skyscraper":
-                for row in result['input']:
-                    print(f"    {row}")
-            else:
-                print(f"    {result['input']}")
+            if func_name != "open_treasure_chest":
+                print(f"  Input: {result['input']}")
             print(f"  Expected: {result['expected']}")
             print(f"  Actual: {result['actual']}")
             print(f"  Correct: {'Yes' if result['correct'] else 'No'}")
@@ -148,6 +146,11 @@ if __name__ == "__main__":
         ("find_nemos_skyscraper", """
         function max_height = find_nemos_skyscraper(coral_city)
             max_height = max(sum(coral_city));
+        end
+        """),
+        ("open_treasure_chest", """
+        function message = open_treasure_chest()
+            message = 'Go on!';
         end
         """)
     ]
