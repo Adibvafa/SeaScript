@@ -1,7 +1,9 @@
+from game.entities.fish import Fish
 from game.render import textures
 from game.entities.entity import Entity
 from game.world.tiles import Tile
 import pygame as pg
+import random as rand
 
 from game.world.world_objects import WorldObject, WorldObjectType
 
@@ -26,30 +28,33 @@ def tick_entities():
         entity.tick()
 
 
-def draw_entities(screen, camera):
-    for entity in entities:
-        entity.draw(screen, camera)
+def spawn_random_fish():
+    fish_types = [1, 2, 3, 4, 5, 6]
+    jellyfish_types = [1, 2]
 
+    num_fish = 100
+    num_jellyfish = 50
 
-def draw_world_objects(screen, camera):
-    for world_object in world_objects:
-        world_object.draw(screen, camera)
+    for _ in range(num_fish):
+        pos = (rand.randint(0, map_width - 1), rand.randint(0, map_height - 1))
+        tile = tiles[pos[0]][pos[1]]
+        if tile.is_solid():
+            continue
 
+        fish_type = rand.choice(fish_types)
+        fish = Fish((float(pos[0]), float(pos[1])), fish_type)
+        add_entity(fish)
 
-def draw_tiles(screen: pg.Surface, camera):
-    camera_width_tiles = int(screen.get_size()[0] // camera.scale) + 2
-    camera_height_tiles = int(screen.get_size()[1] // camera.scale) + 2
-    top_left = camera.to_world((0, 0))
-    for x in range(camera_width_tiles):
-        for y in range(camera_height_tiles):
-            real_x = int(top_left[0]) + x
-            real_y = int(top_left[1]) + y
-            if real_x < 0 or real_y < 0 or real_x >= map_width or real_y >= map_height:
-                continue
-            tile = tiles[real_x][real_y]
-            if tile == Tile.EMPTY:
-                continue
-            tile.draw(screen, camera, real_x, real_y)
+    for _ in range(num_jellyfish):
+        pos = (rand.randint(0, map_width - 1), rand.randint(0, map_height - 1))
+        tile = tiles[pos[0]][pos[1]]
+
+        if tile.is_solid():
+            continue
+
+        jellyfish_type = rand.choice(jellyfish_types)
+        jellyfish = Fish((float(pos[0]), float(pos[1])), jellyfish_type)
+        add_entity(jellyfish)
 
 
 def save_map(file: str):

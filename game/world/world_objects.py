@@ -8,10 +8,11 @@ from game.render.drawable import Drawable
 
 
 class WorldObjectType(Enum):
-    BOTTLE = (0, (0.25, 1.0))
     SEAWEED = (1, (1.0, 1.0))
-    CORAL = (2, (1.0, 1.0))
+    CORAL = (2, (2.0, 3.0))
     ROCK = (3, (1.0, 1.0))
+    CRAB = (4, (1.0, 1.0))
+    STARFISH = (5, (1.0, 1.0))
 
     def __init__(self, idx: int, size: tuple[float, float]):
         self.size = size

@@ -19,12 +19,16 @@ class Fish(Entity):
         if self.ticks_till_move == 0:
             self.ticks_till_move = 50 + rand.randint(0, 50)
             if rand.random() < 0.3:
-                self.velocity = (0.1, 0.0)
+                self.velocity = (self.velocity[0] + 0.1, self.velocity[1])
             elif 0.3 < rand.random() < 0.6:
-                self.velocity = (-0.1, 0.0)
+                self.velocity = (self.velocity[0] - 0.1, self.velocity[1])
             else:
-                self.velocity = (0.0, 0.05) if rand.random() < 0.5 else (0., -0.05)
+                delta = (0.0, 0.05) if rand.random() < 0.5 else (0., -0.05)
+                self.velocity = (self.velocity[0] + delta[0], self.velocity[1] + delta[1])
         super().tick()
 
     def texture(self) -> pg.Surface:
-        return textures.find_texture(f"fish{self.texture_type}")
+        texture = textures.find_texture(f"fish{self.texture_type}")
+        if self.velocity[0] < 0:
+            texture = pg.transform.flip(texture, True, False)
+        return texture

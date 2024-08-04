@@ -67,12 +67,11 @@ class Entity(Drawable):
             collides, col_time = box.collision_time(tile_box, delta)
             if not collides:
                 continue
-            col_dist = delta * col_time
-            min_col_time_x = min(min_col_time_x, col_dist.x)
-            min_col_time_y = min(min_col_time_y, col_dist.y)
+            min_col_time_x = min(min_col_time_x, col_time)
+            min_col_time_y = min(min_col_time_y, col_time)
 
-        final_dx = min_col_time_x * delta.x - (math.copysign(0.01, delta.x) if delta.x != 0 else 0)
-        final_dy = min_col_time_y * delta.y - (math.copysign(0.01, delta.y) if delta.y != 0 else 0)
+        final_dx = min_col_time_x * delta.x - (math.copysign(0.0001, delta.x) if delta.x != 0 else 0)
+        final_dy = min_col_time_y * delta.y - (math.copysign(0.0001, delta.y) if delta.y != 0 else 0)
 
         self.pos = (self.pos[0] + final_dx, self.pos[1] + final_dy)
 
@@ -80,7 +79,7 @@ class Entity(Drawable):
         self.move(self.velocity[0], self.velocity[1])
 
         # Velocity decay
-        self.velocity = (self.velocity[0] * 0.95, self.velocity[1] * 0.95)
+        self.velocity = (self.velocity[0] * 0.99, self.velocity[1] * 0.99)
         if abs(self.velocity[0]) < 0.01:
             self.velocity = (0, self.velocity[1])
         if abs(self.velocity[1]) < 0.01:

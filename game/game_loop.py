@@ -4,10 +4,10 @@ from game.entities.fish import Fish
 from game.entities.jellyfish import JellyFish
 from game.entities.shark import Shark
 from game.world import world
-from game.render import gradient
+from game.render import gradient, world_renderer
 from game.render.camera import Camera
 from game.entities.player import Player
-from game.world.edit import world_edit_tile
+from game.world.edit import world_edit_tile, world_edit_wo
 
 keyboard_state = {
     pg.K_w: False,
@@ -47,18 +47,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
     world.add_entity(jellyfish2)
 
     # add fish
-    fish1 = (Fish((3.0, 3.0), 1))
-    world.add_entity(fish1)
-    fish2 = (Fish((4.0, 4.0), 2))
-    world.add_entity(fish2)
-    fish3 = (Fish((5.0, 5.0), 3))
-    world.add_entity(fish3)
-    fish4 = (Fish((6.0, 6.0), 4))
-    world.add_entity(fish4)
-    fish5 = (Fish((7.0, 7.0), 5))
-    world.add_entity(fish5)
-    fish6 = (Fish((8.0, 8.0), 6))
-    world.add_entity(fish6)
+    world.spawn_random_fish()
 
     # add shark
     shark = (Shark((9.0, 9.0)))
@@ -85,19 +74,20 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
                 if event.key in keyboard_state:
                     keyboard_state[event.key] = False
                 if event.key == pg.K_SPACE:
-                    world_edit_tile.cycle_tile()
+                    world_edit_wo.cycle_wo()
                 if event.key == pg.K_u:
                     world.save_map("map.txt")
                 if event.key == pg.K_f:
                     world_edit_tile.fill_tile(camera, world.map_width, world.map_height)
                 if event.key == pg.K_z:
-                    world_edit_tile.undo()
+                    world_edit_wo.undo()
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button in click_state:
                     click_state[event.button] = True
             elif event.type == pg.MOUSEBUTTONUP:
                 if event.button in click_state:
                     click_state[event.button] = False
+                world_edit_wo.place_wo(camera, world.map_width, world.map_height)
 
         process_input(player, camera)
 
@@ -109,11 +99,10 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
 
         gradient.draw_vertical_gradient(screen, top_colour, bottom_colour)
         world.tick_entities()
-        world.draw_tiles(screen, camera)
-        world.draw_entities(screen, camera)
-        if click_state[pg.BUTTON_LEFT]:
-            world_edit_tile.place_tile(camera, world.map_width, world.map_height)
-        world_edit_tile.draw(screen, camera)
+        world_renderer.render(screen, camera)
+        # if click_state[pg.BUTTON_LEFT]:
+        #     world_edit_tile.place_tile(camera, world.map_width, world.map_height)
+        world_edit_wo.draw(screen, camera)
 
         # Render border
         border_top_left = camera.to_screen((0, 0))

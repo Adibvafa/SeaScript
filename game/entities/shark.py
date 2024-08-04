@@ -26,4 +26,7 @@ class Shark(Entity):
         super().tick()
 
     def texture(self) -> pg.Surface:
-        return textures.find_texture("shark")
+        texture = textures.find_texture("shark")
+        if self.velocity[0] < 0:
+            texture = pg.transform.flip(texture, True, False)
+        return texture
