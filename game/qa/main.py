@@ -13,9 +13,11 @@ sys.path.append(backend_path)
 import checker
 
 class SeaThemedGameScreen(QMainWindow):
-    def __init__(self):
+    def __init__(self, step=0):
         super().__init__()
-        self.setup_game()
+        self.STEPS = ["can_jellyfish_swim", "count_familiar_sharks", "find_nemos_skyscraper", "open_treasure_chest"]
+        self.step = step
+        self.current_question = self.fetch_question()
         self.init_ui()
 
     def init_ui(self):
@@ -39,11 +41,6 @@ class SeaThemedGameScreen(QMainWindow):
 
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
-
-    def setup_game(self):
-        self.STEPS = ["can_jellyfish_swim", "count_familiar_sharks", "find_nemos_skyscraper", "open_treasure_chest"]
-        self.step = 1
-        self.current_question = self.fetch_question()
 
     def create_question_widget(self):
         question_widget = QWebEngineView()
@@ -184,21 +181,8 @@ class SeaThemedGameScreen(QMainWindow):
         submitted_text = self.editor.text()
         if checker.grade_matlab_function(self.STEPS[self.step], submitted_text.strip())[0]:
             self.feedback_area.setHtml(f'<p style="font-weight: bold; font-size: 18px;">Amazing! Puzzle piece is <i>"{self.next_piece}"</i></p>')
-            self.step += 1
-            self.update_question()
         else:
             self.feedback_area.setHtml('<p style="font-weight: bold; font-size: 18px;">No! Your solution isn\'t quite right yet.</p>')
-
-    def update_question(self):
-        if self.step < len(self.STEPS):
-            self.current_question = self.fetch_question()
-            self.update_question_html(self.question_widget)
-        else:
-            self.game_over()
-
-    def game_over(self):
-        self.feedback_area.setHtml('<p style="font-weight: bold; font-size: 18px;">Congratulations! You\'ve completed all challenges!</p>')
-        self.findChild(QPushButton).setEnabled(False)
 
     def fetch_question(self):
         return checker.fetch_question(self.STEPS[self.step])
@@ -209,6 +193,6 @@ class SeaThemedGameScreen(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = SeaThemedGameScreen()
+    window = SeaThemedGameScreen(step=0)
     window.show()
     sys.exit(app.exec())
