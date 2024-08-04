@@ -10,7 +10,7 @@ if __name__ == "__main__":
     pg.init()
     screen = pg.display.set_mode((1400, 800))
 
-    player = Player((0, 0))
+    player = Player((5, 5))
     world.add_entity(player)
     camera = Camera(screen, (0, 0))
 

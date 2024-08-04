@@ -89,9 +89,9 @@ def init_objectives():
     objectives.append(ObjectiveCompleteChallenge(0))
     objectives.append(ObjectiveInteract("Find the King Shark", king_sharky))
     objectives.append(ObjectiveCompleteChallenge(1))
-    objectives.append(ObjectiveInteract("Find the Blank Challenge", blank))
+    objectives.append(ObjectiveInteract("Find the Coral Reef", blank))
     objectives.append(ObjectiveCompleteChallenge(2))
-    objectives.append(ObjectiveInteract("Find the Chest", chest))
+    objectives.append(ObjectiveInteract("Find the Treasure Chest", chest))
     objectives.append(ObjectiveCompleteChallenge(3))
 
 
