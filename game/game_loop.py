@@ -1,8 +1,9 @@
 import pygame as pg
 
-
 from game.entities.chest import Chest
 from game.entities.QueenJelly import QueenJelly
+from game.objective.objective import init_objectives
+from game.qa import qa
 from game.world import world
 from game.render import world_renderer, gradient_renderer, coord_renderer, depth_renderer
 from game.render.camera import Camera
@@ -24,6 +25,8 @@ click_state = {
 
 
 def process_input(player: Player, camera: Camera):
+    if player.freeze_movement:
+        return
     speed = 0.25
     if keyboard_state[pg.K_w]:
         player.move(0, -speed)
@@ -40,6 +43,11 @@ def process_input(player: Player, camera: Camera):
 
 def loop(player: Player, screen: pg.Surface, camera: Camera):
     running = True
+
+    qa.init_qa()
+    qa.window.hide()
+
+    init_objectives()
 
     # Initialize music
     initialize_music()
@@ -83,7 +91,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
                 if event.key == pg.K_z:
                     world_edit_wo.undo()
                 if event.key == pg.K_e:
-                    world_edit_wo.erase(camera)
+                    qa.open_challenge(0, lambda: None)
                 # Add volume control
                 if event.key == pg.K_UP:
                     set_volume(min(pg.mixer.music.get_volume() + 0.1, 1.0))

@@ -13,6 +13,7 @@ from game.world.particle.particle import BubbleParticle
 class Player(Entity):
 
     last_move_right: bool = True
+    freeze_movement: bool = False
 
     def __init__(self, pos: tuple[float, float]):
         super().__init__(pos, (5, 5))
