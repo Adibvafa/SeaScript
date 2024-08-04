@@ -13,7 +13,9 @@ def render(screen, camera):
 
 def draw_entities(screen, camera):
     for entity in world.entities:
-        entity.draw(screen, camera)
+        dist = (entity.pos[0] - camera.pos[0]) ** 2 + (entity.pos[1] - camera.pos[1]) ** 2
+        if dist < (screen.get_size()[0] / camera.scale) ** 2 * 2:
+            entity.draw(screen, camera)
 
 
 def draw_world_objects(screen, camera):

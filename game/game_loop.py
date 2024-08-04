@@ -11,7 +11,7 @@ from game.render import world_renderer, gradient_renderer, coord_renderer, depth
 from game.render.camera import Camera
 from game.entities.player import Player
 from game.world.edit import world_edit_tile, world_edit_wo
-from game.music.music import initialize_music, stop_music, set_volume  # Import the new music functions
+from game.music.music import initialize_music, stop_music, set_volume
 
 keyboard_state = {
     pg.K_w: False,
@@ -27,7 +27,7 @@ click_state = {
 
 
 def process_input(player: Player, camera: Camera):
-    speed = 0.25
+    speed = 0.38
     if keyboard_state[pg.K_w]:
         player.move(0, -speed)
     if keyboard_state[pg.K_s]:
@@ -45,7 +45,6 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
     running = True
 
     qa.init_qa()
-    # qa.window.hide()
 
     objective.init_objectives()
 
@@ -127,7 +126,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
         pg.display.flip()
 
         # Control the frame rate
-        clock.tick(50)  # 50 frames per second
+        clock.tick(150)
 
     # Stop the music when the game ends
     stop_music()

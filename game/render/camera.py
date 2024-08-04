@@ -4,7 +4,7 @@ import pygame as pg
 
 class Camera:
     pos: tuple[float, float]
-    scale: float = 40.0
+    scale: float = 60.0
     screen: pg.Surface
 
     def __init__(self, screen: pg.Surface, pos: tuple[float, float]):

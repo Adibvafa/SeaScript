@@ -8,7 +8,12 @@ screen: pg.Surface
 
 if __name__ == "__main__":
     pg.init()
-    screen = pg.display.set_mode((1400, 800))
+    
+    # Get the current display info
+    info = pg.display.Info()
+    
+    # Set the display mode to full screen
+    screen = pg.display.set_mode((info.current_w, info.current_h), pg.FULLSCREEN)
 
     player = Player((0, 0))
     world.add_entity(player)
