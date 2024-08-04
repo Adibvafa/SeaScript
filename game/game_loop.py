@@ -1,8 +1,8 @@
 import pygame as pg
 
-
 from game.entities.chest import Chest
-from game.entities.angler import Angler
+from game.objective.objective import objectives
+from game.qa import qa
 from game.world import world
 from game.render import world_renderer, gradient_renderer, coord_renderer, depth_renderer
 from game.render.camera import Camera
@@ -22,7 +22,10 @@ click_state = {
     pg.BUTTON_RIGHT: False
 }
 
+
 def process_input(player: Player, camera: Camera):
+    if player.freeze_movement:
+        return
     speed = 0.25
     if keyboard_state[pg.K_w]:
         player.move(0, -speed)
@@ -36,8 +39,14 @@ def process_input(player: Player, camera: Camera):
         player.last_move_right = True
     camera.pos = player.pos
 
+
 def loop(player: Player, screen: pg.Surface, camera: Camera):
     running = True
+
+    qa.init_qa()
+    qa.window.hide()
+
+    objectives.init_objectives()
 
     # Initialize music
     initialize_music()

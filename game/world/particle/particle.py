@@ -62,7 +62,7 @@ class SparkleParticle(Particle):
     tick_num: int = 0
 
     def __init__(self, pos: tuple[float, float], vel: tuple[float, float] = (0, 0)) -> None:
-        super().__init__((0.25, 0.25), pos, vel, 100)
+        super().__init__((0.4, 0.4), pos, vel, 100)
 
     def texture(self) -> pg.Surface:
         texture = textures.find_texture("particle_sparkle")
@@ -73,6 +73,6 @@ class SparkleParticle(Particle):
     def tick(self):
         super().tick()
         self.tick_num += 1
-        size_x = math.sin(self.tick_num * math.pi * 2 / 35) * 0.075 + 0.25
-        size_y = math.sin(self.tick_num * math.pi * 2 / 35) * 0.075 + 0.25
+        size_x = math.sin(self.tick_num * math.pi * 2 / 35) * 0.075 + 0.4
+        size_y = math.sin(self.tick_num * math.pi * 2 / 35) * 0.075 + 0.4
         self.size = (size_x, size_y)

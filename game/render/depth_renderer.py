@@ -6,8 +6,8 @@ from game.render.gradient import draw_vertical_gradient
 
 
 def render(screen: pg.Surface, camera: Camera):
-    depth = camera.pos[1] / 200.0 * 6000
-    depth_proportion = depth / 6000
+    depth = camera.pos[1] / 200.0 * 7000
+    depth_proportion = depth / 7000
     surface = pg.Surface((20, 100))
     surface.fill((0, 0, 0), (0, 0, 20, 100))
     draw_vertical_gradient(surface, (32, 98, 155), (5, 15, 100))

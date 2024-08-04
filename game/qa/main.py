@@ -1,5 +1,6 @@
 import sys
 import os
+from typing import Callable
 
 # Adjust the paths to import the MatlabGrader class and setup function
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -22,6 +23,9 @@ import markdown
 import emoji
 
 class SeaThemedGameScreen(QMainWindow):
+
+    callback: Callable
+
     def __init__(self, matlab_grader, step=0):
         super().__init__()
         self.matlab_grader = matlab_grader
@@ -29,6 +33,7 @@ class SeaThemedGameScreen(QMainWindow):
         self.step = step
         self.current_question = self.fetch_question()
         self.init_ui()
+        self.callback = lambda: None
 
     def init_ui(self):
         self.setWindowTitle("Ocean Explorer")
@@ -259,6 +264,7 @@ class SeaThemedGameScreen(QMainWindow):
         all_correct, _ = self.matlab_grader.grade_matlab_function(self.STEPS[self.step], submitted_text.strip())
         if all_correct:
             self.feedback_area.setHtml(f'<p style="margin: 0; font-weight: bold; font-size: 20px;">Wonderful! Puzzle piece is: <strong><em>"{self.fetch_puzzle_piece}"</em></strong></p>')
+            self.callback()
         else:
             self.feedback_area.setHtml('<p style="margin: 0; font-weight: bold; font-size: 20px;">Not quite right. Try again!</p>')
 
