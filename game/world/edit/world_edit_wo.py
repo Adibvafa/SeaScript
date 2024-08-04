@@ -53,4 +53,5 @@ def erase(camera: Camera):
             closest_dist = dist
     if closest is not None:
         world.world_objects.remove(closest)
-        placed_wo.remove(closest)
+        if closest in placed_wo:
+            placed_wo.remove(closest)
