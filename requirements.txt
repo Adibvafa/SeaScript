@@ -1,0 +1,13 @@
+matlabengine
+pillow
+emoji
+numpy
+pygame
+PyQt6
+PyQt6-QtWidgets
+markdown
+markdown2
+PyQt6-Qsci
+pymongo
+dotenv
+certify
