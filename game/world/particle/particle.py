@@ -35,6 +35,7 @@ class Particle(Drawable):
         pos = (self.pos[0] - self.size[0] / 2, self.pos[1] - self.size[1] / 2)
         screen.blit(texture, camera.to_screen(pos))
 
+
 class BubbleParticle(Particle):
 
     tick_num: int = 0
@@ -44,6 +45,27 @@ class BubbleParticle(Particle):
 
     def texture(self) -> pg.Surface:
         texture = textures.find_texture("particle_bubble")
+        if (self.tick_num // 15) % 2 == 0:
+            texture = pg.transform.rotate(texture, 90)
+        return texture
+
+    def tick(self):
+        super().tick()
+        self.tick_num += 1
+        size_x = math.sin(self.tick_num * math.pi * 2 / 35) * 0.075 + 0.25
+        size_y = math.sin(self.tick_num * math.pi * 2 / 35) * 0.075 + 0.25
+        self.size = (size_x, size_y)
+
+
+class SparkleParticle(Particle):
+
+    tick_num: int = 0
+
+    def __init__(self, pos: tuple[float, float], vel: tuple[float, float] = (0, 0)) -> None:
+        super().__init__((0.25, 0.25), pos, vel, 100)
+
+    def texture(self) -> pg.Surface:
+        texture = textures.find_texture("particle_sparkle")
         if (self.tick_num // 15) % 2 == 0:
             texture = pg.transform.rotate(texture, 90)
         return texture
