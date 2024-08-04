@@ -4,7 +4,7 @@ from game.entities.fish import Fish
 from game.entities.jellyfish import JellyFish
 from game.entities.shark import Shark
 from game.world import world
-from game.render import gradient, world_renderer, gradient_renderer
+from game.render import gradient, world_renderer, gradient_renderer, coord_renderer
 from game.render.camera import Camera
 from game.entities.player import Player
 from game.world.edit import world_edit_tile, world_edit_wo
@@ -101,6 +101,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
         # if click_state[pg.BUTTON_LEFT]:
         #     world_edit_tile.place_tile(camera, world.map_width, world.map_height)
         world_edit_wo.draw(screen, camera)
+        coord_renderer.render(screen, camera)
 
         # Render border
         border_top_left = camera.to_screen((0, 0))
