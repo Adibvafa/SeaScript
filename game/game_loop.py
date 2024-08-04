@@ -1,9 +1,8 @@
 import pygame as pg
 
+
 from game.entities.chest import Chest
-from game.entities.fish import Fish
-from game.entities.jellyfish import JellyFish
-from game.entities.shark import Shark
+from game.entities.angler import Angler
 from game.world import world
 from game.render import world_renderer, gradient_renderer, coord_renderer, depth_renderer
 from game.render.camera import Camera
@@ -24,7 +23,7 @@ click_state = {
 }
 
 def process_input(player: Player, camera: Camera):
-    speed = 0.1
+    speed = 0.25
     if keyboard_state[pg.K_w]:
         player.move(0, -speed)
     if keyboard_state[pg.K_s]:
@@ -44,18 +43,8 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
     initialize_music()
     set_volume(0.5)  # Set initial volume to 50%
 
-    # add jellyfish
-    jellyfish1 = JellyFish((2.0, 2.0), 1)
-    world.add_entity(jellyfish1)
-    jellyfish2 = JellyFish((3.0, 3.0), 2)
-    world.add_entity(jellyfish2)
-
     chest = Chest((239.0, 182.0))
     world.add_entity(chest)
-
-    # add shark
-    shark = (Shark((9.0, 9.0)))
-    world.add_entity(shark)
 
     # Create a clock object
     clock = pg.time.Clock()
