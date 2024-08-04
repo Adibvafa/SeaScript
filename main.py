@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # Set the display mode to full screen
     screen = pg.display.set_mode((info.current_w, info.current_h), pg.FULLSCREEN)
 
-    player = Player((0, 0))
+    player = Player((5, 5))
     world.add_entity(player)
     camera = Camera(screen, (0, 0))
 
