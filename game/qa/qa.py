@@ -13,8 +13,8 @@ app = QApplication(sys.argv)
 
 def init_qa():
     # Initialize resources and create MatlabGrader instance
-    matlab_engine, collection, mongo_client = setup_resources()
-    grader = MatlabGrader(matlab_engine, collection, mongo_client)
+    # matlab_engine, collection, mongo_client = setup_resources()
+    grader = MatlabGrader(None, None, None)
 
     # Create and show the main window
     global window
