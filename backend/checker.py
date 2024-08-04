@@ -3,6 +3,10 @@ import tempfile
 from functools import lru_cache
 import matlab
 import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from setup import setup_resources
 
 class MatlabGrader:
     def __init__(self, matlab_engine, mongo_collection, mongo_client):
@@ -144,8 +148,6 @@ class MatlabGrader:
 
 # Example usage
 if __name__ == "__main__":
-    from setup import setup_resources
-
     # Initialize resources
     matlab_engine, collection, mongo_client = setup_resources()
 
