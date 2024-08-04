@@ -88,7 +88,7 @@ def spawn_random_fish():
         add_entity(jellyfish)
 
     for _ in range(num_sharks):
-        pos = (rand.randint(0, map_width - 1), rand.randint(90, 120))
+        pos = (rand.randint(80, map_width - 1), rand.randint(100, 135))
         shark = Shark((float(pos[0]), float(pos[1])))
         tile_list = colliding_tiles(shark.hitbox(), tiles)
 
