@@ -10,7 +10,7 @@ class JellyFish(Entity):
     ticks_till_move: int = 50 + rand.randint(0, 50)
 
     def __init__(self, pos: tuple[float, float], texture_type: int):
-        super().__init__(pos, (1.5, 2))
+        super().__init__(pos, (1.5, 3.0))
         self.texture_type = texture_type
 
     def type(self) -> EntityType:

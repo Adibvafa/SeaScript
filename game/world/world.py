@@ -1,5 +1,7 @@
 from game.entities.entity_types import EntityType
 from game.entities.fish import Fish
+from game.entities.jellyfish import JellyFish
+from game.entities.shark import Shark
 from game.entities.spawn_point import SpawnPoint
 from game.render import textures
 from game.entities.entity import Entity
@@ -44,15 +46,20 @@ def tick_particles():
 
 
 def spawn_random_fish():
-    fish_types = [1, 2, 3, 4, 5, 6]
-    jellyfish_types = [1, 2]
+    fish_types_by_sector = [[2, 5, 6, 1, 3, 4], [1, 3, 4]]
+    jellyfish_types = [[1, 2]]
 
-    num_fish = 100
-    num_jellyfish = 50
+    num_fish = 400
+    num_jellyfish = 175
+    num_sharks = 10
 
     for _ in range(num_fish):
-        fish_type = rand.choice(fish_types)
         pos = (rand.randint(0, map_width - 1), rand.randint(0, map_height - 1))
+        sector = int(0 if pos[1] < 0 else pos[1] / 60.0)
+        if sector >= len(fish_types_by_sector):
+            continue
+
+        fish_type = rand.choice(fish_types_by_sector[sector])
         fish = Fish((float(pos[0]), float(pos[1])), fish_type)
 
         tile_list = colliding_tiles(fish.hitbox(), tiles)
@@ -65,9 +72,11 @@ def spawn_random_fish():
 
     for _ in range(num_jellyfish):
         pos = (rand.randint(0, map_width - 1), rand.randint(0, map_height - 1))
-
-        jellyfish_type = rand.choice(jellyfish_types)
-        jellyfish = Fish((float(pos[0]), float(pos[1])), jellyfish_type)
+        sector = int(0 if pos[1] < 0 else pos[1] / 60.0)
+        if sector >= len(jellyfish_types):
+            continue
+        jellyfish_type = rand.choice(jellyfish_types[sector])
+        jellyfish = JellyFish((float(pos[0]), float(pos[1])), jellyfish_type)
 
         tile_list = colliding_tiles(jellyfish.hitbox(), tiles)
 
@@ -76,6 +85,17 @@ def spawn_random_fish():
             continue
 
         add_entity(jellyfish)
+
+    for _ in range(num_sharks):
+        pos = (rand.randint(0, map_width - 1), rand.randint(60, 120))
+        shark = Shark((float(pos[0]), float(pos[1])))
+        tile_list = colliding_tiles(shark.hitbox(), tiles)
+
+        if any([tiles[x][y].is_solid() for x, y in tile_list]):
+            continue
+
+        add_entity(shark)
+
 
 
 def save_map(file: str):
