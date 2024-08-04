@@ -173,7 +173,7 @@ if __name__ == "__main__":
         """),
         ("open_treasure_chest", """
         function message = open_treasure_chest()
-            message = 'Go on!';
+            message = 'Exploration unlocks hidden treasures.';
         end
         """)
     ]
