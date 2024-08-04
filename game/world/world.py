@@ -52,7 +52,7 @@ def spawn_random_fish():
     num_fish = 400
     num_jellyfish = 175
     num_sharks = 20
-    num_anglers = 10
+    num_anglers = 5
 
     for _ in range(num_fish):
         pos = (rand.randint(0, map_width - 1), rand.randint(0, map_height - 1))

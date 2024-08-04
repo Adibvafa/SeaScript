@@ -1,6 +1,7 @@
 import pygame as pg
 
 from game.entities.chest import Chest
+from game.entities.QueenJelly import QueenJelly
 from game.objective.objective import init_objectives
 from game.qa import qa
 from game.world import world
@@ -54,6 +55,9 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
 
     chest = Chest((239.0, 182.0))
     world.add_entity(chest)
+
+    queen_jelly = QueenJelly((25.0, 50.0))
+    world.add_entity(queen_jelly)
 
     # Create a clock object
     clock = pg.time.Clock()
