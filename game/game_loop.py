@@ -2,7 +2,7 @@ import pygame as pg
 
 from game.entities.chest import Chest
 from game.entities.QueenJelly import QueenJelly
-from game.objective.objective import init_objectives
+import game.objective.objective as objective
 from game.qa import qa
 from game.world import world
 from game.render import world_renderer, gradient_renderer, coord_renderer, depth_renderer
@@ -47,7 +47,7 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
     qa.init_qa()
     # qa.window.hide()
 
-    init_objectives()
+    objective.init_objectives()
 
     # Initialize music
     initialize_music()
@@ -55,9 +55,6 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
 
     chest = Chest((239.0, 182.0))
     world.add_entity(chest)
-
-    queen_jelly = QueenJelly((25.0, 50.0))
-    world.add_entity(queen_jelly)
 
     # Create a clock object
     clock = pg.time.Clock()
@@ -90,8 +87,6 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
                     world_edit_tile.fill_tile(camera, world.map_width, world.map_height)
                 if event.key == pg.K_z:
                     world_edit_wo.undo()
-                if event.key == pg.K_e:
-                    qa.open_challenge(len(qa.completed_challenges), lambda: None)
                 # Add volume control
                 if event.key == pg.K_UP:
                     set_volume(min(pg.mixer.music.get_volume() + 0.1, 1.0))
@@ -107,9 +102,10 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
 
         process_input(player, camera)
 
-        # Draw game state
         world.tick_entities()
         world.tick_particles()
+
+        objective.check_objectives()
 
         gradient_renderer.render(screen, camera)
         world_renderer.render(screen, camera)

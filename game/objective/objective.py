@@ -2,6 +2,7 @@ from game.entities.entity import Entity
 from game.entities.player import Player
 from game.qa import qa
 
+
 class ObjectiveEntity(Entity):
     interacted_with: bool = False
 
@@ -69,4 +70,22 @@ objectives = []
 
 
 def init_objectives():
-    pass
+    from game.entities.QueenJelly import QueenJelly
+    queen_jelly = QueenJelly((25.0, 50.0))
+    objectives.append(ObjectiveInteract("Find the Queen Jellyfish", queen_jelly))
+    objectives.append(ObjectiveCompleteChallenge(0))
+
+
+def check_objectives():
+    for objective in objectives:
+        was_completed = objective.completed
+        objective.check()
+        if objective.completed and not was_completed:
+            print(f"Completed objective: {objective.description}")
+
+
+def get_current_objective() -> Objective | None:
+    for objective in objectives:
+        if not objective.completed:
+            return objective
+    return None
