@@ -1,21 +1,30 @@
 import sys
 import os
+
+# Adjust the paths to import the MatlabGrader class and setup function
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
+backend_path = os.path.join(project_root, 'backend')
+
+sys.path.append(project_root)
+sys.path.append(backend_path)
+
+from setup import setup_resources
+from checker import MatlabGrader
+
+# Rest of the imports
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTextEdit, QLabel
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.Qsci import QsciScintilla, QsciLexerMatlab
-from PyQt6.QtGui import QColor, QFont, QPixmap
+from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtCore import Qt, QTimer
 import markdown
 import emoji
 
-# Adjust the path to import the checker module
-backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../backend'))
-sys.path.append(backend_path)
-import checker
-
 class SeaThemedGameScreen(QMainWindow):
-    def __init__(self, step=0):
+    def __init__(self, matlab_grader, step=0):
         super().__init__()
+        self.matlab_grader = matlab_grader
         self.STEPS = ["can_jellyfish_swim", "count_familiar_sharks", "find_nemos_skyscraper", "open_treasure_chest"]
         self.step = step
         self.current_question = self.fetch_question()
@@ -34,12 +43,12 @@ class SeaThemedGameScreen(QMainWindow):
 
         main_widget = QWidget()
         main_layout = QHBoxLayout()
-        main_layout.setSpacing(11)  # Reduced spacing between layouts
+        main_layout.setSpacing(11)
 
         left_layout = QVBoxLayout()
-        left_layout.setSpacing(11)  # Reduced spacing between widgets
+        left_layout.setSpacing(11)
         right_layout = QVBoxLayout()
-        right_layout.setSpacing(11)  # Reduced spacing between widgets
+        right_layout.setSpacing(11)
 
         self.challenge_title = self.create_challenge_title()
         self.question_widget = self.create_question_widget()
@@ -247,13 +256,14 @@ class SeaThemedGameScreen(QMainWindow):
 
     def perform_check(self):
         submitted_text = self.editor.text()
-        if checker.grade_matlab_function(self.STEPS[self.step], submitted_text.strip())[0]:
+        all_correct, _ = self.matlab_grader.grade_matlab_function(self.STEPS[self.step], submitted_text.strip())
+        if all_correct:
             self.feedback_area.setHtml(f'<p style="margin: 0; font-weight: bold; font-size: 20px;">Wonderful! Puzzle piece is: <strong><em>"{self.next_piece}"</em></strong></p>')
         else:
             self.feedback_area.setHtml('<p style="margin: 0; font-weight: bold; font-size: 20px;">Not quite right. Try again!</p>')
 
     def fetch_question(self):
-        return checker.fetch_question(self.STEPS[self.step])
+        return self.matlab_grader.fetch_question(self.STEPS[self.step])
 
     @property
     def next_piece(self):
@@ -262,6 +272,19 @@ class SeaThemedGameScreen(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = SeaThemedGameScreen(step=0)
+
+    # Initialize resources and create MatlabGrader instance
+    matlab_engine, collection, mongo_client = setup_resources()
+    grader = MatlabGrader(matlab_engine, collection, mongo_client)
+
+    # Create and show the main window
+    window = SeaThemedGameScreen(grader, step=0)
     window.show()
-    sys.exit(app.exec())
+
+    # Run the application
+    exit_code = app.exec()
+
+    # Clean up resources
+    grader.close_resources()
+
+    sys.exit(exit_code)

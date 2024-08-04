@@ -1,152 +1,149 @@
-import matlab.engine
 import numpy as np
 import tempfile
-from pymongo import MongoClient
+from functools import lru_cache
+import matlab
 import os
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+class MatlabGrader:
+    def __init__(self, matlab_engine, mongo_collection, mongo_client):
+        self.matlab_engine = matlab_engine
+        self.collection = mongo_collection
+        self.mongo_client = mongo_client
 
-# Database constants
-MONGO_URI=os.getenv("mongodb_uri")
-DATABASE_NAME = "matlab"
-COLLECTION_NAME = "matlab"
+    @lru_cache(maxsize=None)
+    def fetch_question_data(self, func_name):
+        """
+        Fetch the question data (test cases) for a given function from the database.
+        """
+        query = {"function": func_name}
+        question_data = self.collection.find_one(query)
+        
+        if question_data:
+            return {
+                "question": question_data.get("question", ""),
+                "test": question_data.get("test", [])
+            }
+        return None
 
+    def fetch_question(self, func_name):
+        """
+        Fetch the question.
+        """
+        question_data = self.fetch_question_data(func_name)
+        return question_data["question"] if question_data else "END"
 
-def fetch_question(func_name):
-    """
-    Fetch the question.
-    """
-    client = MongoClient(MONGO_URI)
-    db = client[DATABASE_NAME]
-    collection = db[COLLECTION_NAME]
+    def convert_to_matlab(self, value, func_name):
+        """
+        Convert Python values to MATLAB compatible types based on the function name.
+        """
+        if func_name == "can_jellyfish_swim":
+            return float(value)
+        elif func_name == "count_familiar_sharks":
+            return [self.matlab_engine.cell(value[0]), self.matlab_engine.cell(value[1])]
+        elif func_name == "find_nemos_skyscraper":
+            return matlab.double(value)
+        elif func_name == "open_treasure_chest":
+            return []  # No input for this function
+        else:
+            raise ValueError(f"Unknown function: {func_name}")
 
-    query = {"function": func_name}
-    question_data = collection.find_one(query)
-    
-    if question_data:
-        return (question_data["question"])
-    return "END"
-
-def grade_matlab_function(func_name, user_input):
-    """
-    Main function to handle the grading of a MATLAB function.
-    """
-    question_data = fetch_question_data(func_name)
-    print(f"Grading function '{func_name}' with user input")
-
-    if question_data:
-        return evaluate_matlab_function(user_input.strip(), func_name, question_data['test'])
-    
-    print(f"Warning: No question data found for function '{func_name}'")
-    return False, None
-
-def fetch_question_data(func_name):
-    """
-    Fetch the question data (test cases) for a given function from the database.
-    """
-    client = MongoClient(MONGO_URI)
-    db = client[DATABASE_NAME]
-    collection = db[COLLECTION_NAME]
-
-    query = {"function": func_name}
-    question_data = collection.find_one(query)
-    
-    if question_data:
-        return {
-            "test": question_data.get("test", [])
-        }
-    return None
-
-def convert_to_matlab(eng, value, func_name):
-    """
-    Convert Python values to MATLAB compatible types based on the function name.
-    """
-    if func_name == "can_jellyfish_swim":
-        return float(value)
-    elif func_name == "count_familiar_sharks":
-        return [eng.cell(value[0]), eng.cell(value[1])]
-    elif func_name == "find_nemos_skyscraper":
-        return matlab.double(value)
-    elif func_name == "open_treasure_chest":
-        return []  # No input for this function
-    else:
-        raise ValueError(f"Unknown function: {func_name}")
-
-def evaluate_matlab_function(user_input, func_name, test_cases):
-    """
-    Evaluate a MATLAB function by running multiple test cases.
-    """
-    eng = matlab.engine.start_matlab()
-    
-    try:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            file_path = os.path.join(temp_dir, f"{func_name}.m")
-            with open(file_path, 'w') as f:
-                f.write(user_input)
-            
-            eng.addpath(temp_dir)
-            matlab_func = getattr(eng, func_name)
-            
-            results = []
-            all_correct = True
-
-            for test_case in test_cases:
-                input_value = test_case.get('input')
-                expected_output = test_case['output']
+    def evaluate_matlab_function(self, user_input, func_name, test_cases):
+        """
+        Evaluate a MATLAB function by running multiple test cases.
+        """
+        try:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                file_path = os.path.join(temp_dir, f"{func_name}.m")
+                with open(file_path, 'w') as f:
+                    f.write(user_input)
                 
-                matlab_input = convert_to_matlab(eng, input_value, func_name) if input_value is not None else []
+                self.matlab_engine.addpath(temp_dir)
+                matlab_func = getattr(self.matlab_engine, func_name)
                 
-                if isinstance(matlab_input, list):
-                    result = matlab_func(*matlab_input)
-                else:
-                    result = matlab_func(matlab_input)
+                results = []
+                for test_case in test_cases:
+                    input_value = test_case.get('input')
+                    expected_output = test_case['output']
+                    
+                    matlab_input = self.convert_to_matlab(input_value, func_name) if input_value is not None else []
+                    
+                    result = matlab_func(*matlab_input) if isinstance(matlab_input, list) else matlab_func(matlab_input)
+                    
+                    result = self.process_matlab_result(result)
+                    
+                    is_correct = result == expected_output
+                    results.append({
+                        'input': input_value,
+                        'expected': expected_output,
+                        'actual': result,
+                        'correct': is_correct
+                    })
+                    
+                    if not is_correct:
+                        return False, results
                 
-                if isinstance(result, matlab.logical):
-                    result = bool(result)
-                elif isinstance(result, matlab.double):
-                    result = np.array(result).flatten()[0]  # Convert to scalar if possible
-                elif isinstance(result, str):
-                    result = result.strip()  # Remove any leading/trailing whitespace
-                
-                is_correct = result == expected_output
-                results.append({
-                    'input': input_value,
-                    'expected': expected_output,
-                    'actual': result,
-                    'correct': is_correct
-                })
-                
-                if not is_correct:
-                    all_correct = False
-                    return False, None
-            
-            return all_correct, results
+                return True, results
 
-    except Exception as e:
-        print(f"Error evaluating function '{func_name}': {str(e)}")
+        except Exception as e:
+            print(f"Error evaluating function '{func_name}': {str(e)}")
+            return False, None
+
+    def process_matlab_result(self, result):
+        """
+        Process the result returned from MATLAB.
+        """
+        if isinstance(result, matlab.logical):
+            return bool(result)
+        elif isinstance(result, matlab.double):
+            return np.array(result).flatten()[0]  # Convert to scalar if possible
+        elif isinstance(result, str):
+            return result.strip()  # Remove any leading/trailing whitespace
+        return result
+
+    def grade_matlab_function(self, func_name, user_input):
+        """
+        Main function to handle the grading of a MATLAB function.
+        """
+        question_data = self.fetch_question_data(func_name)
+        print(f"Grading function '{func_name}' with user input")
+
+        if question_data:
+            return self.evaluate_matlab_function(user_input.strip(), func_name, question_data['test'])
+        
+        print(f"Warning: No question data found for function '{func_name}'")
         return False, None
-    
-    finally:
-        eng.quit()
 
-def print_results(func_name, all_correct, results):
-    if results is not None:
-        print(f"Function '{func_name}' evaluation result: {'All Correct' if all_correct else 'Some Incorrect'}")
-        for idx, result in enumerate(results):
-            print(f"Test case {idx + 1}:")
-            if func_name != "open_treasure_chest":
-                print(f"  Input: {result['input']}")
-            print(f"  Expected: {result['expected']}")
-            print(f"  Actual: {result['actual']}")
-            print(f"  Correct: {'Yes' if result['correct'] else 'No'}")
-            print()
-    else:
-        print("No results to display. An error occurred during evaluation.")
+    def print_results(self, func_name, all_correct, results):
+        if results is not None:
+            print(f"Function '{func_name}' evaluation result: {'All Correct' if all_correct else 'Some Incorrect'}")
+            for idx, result in enumerate(results):
+                print(f"Test case {idx + 1}:")
+                if func_name != "open_treasure_chest":
+                    print(f"  Input: {result['input']}")
+                print(f"  Expected: {result['expected']}")
+                print(f"  Actual: {result['actual']}")
+                print(f"  Correct: {'Yes' if result['correct'] else 'No'}")
+                print()
+        else:
+            print("No results to display. An error occurred during evaluation.")
 
+    def close_resources(self):
+        """
+        Close the MATLAB engine and MongoDB client.
+        """
+        self.matlab_engine.quit()
+        self.mongo_client.close()
 
+# Example usage
 if __name__ == "__main__":
+    from setup import setup_resources
+
+    # Initialize resources
+    matlab_engine, collection, mongo_client = setup_resources()
+
+    # Create MatlabGrader instance
+    grader = MatlabGrader(matlab_engine, collection, mongo_client)
+
     # Example usage for each function
     functions = [
         ("can_jellyfish_swim", """
@@ -171,8 +168,12 @@ if __name__ == "__main__":
         """)
     ]
 
-    for func_name, user_input in functions:
-        fetch_question(func_name)
-        all_correct, results = grade_matlab_function(func_name, user_input)
-        print_results(func_name, all_correct, results)
-        print("\n" + "="*50 + "\n")
+    try:
+        for func_name, user_input in functions:
+            grader.fetch_question(func_name)
+            all_correct, results = grader.grade_matlab_function(func_name, user_input)
+            grader.print_results(func_name, all_correct, results)
+            print("\n" + "="*50 + "\n")
+    finally:
+        # Clean up resources
+        grader.close_resources()
