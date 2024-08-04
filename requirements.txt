@@ -10,4 +10,4 @@ markdown2
 PyQt6-Qsci
 pymongo
 dotenv
-certify
+certifi
