@@ -263,7 +263,7 @@ class SeaThemedGameScreen(QMainWindow):
         submitted_text = self.editor.text()
         all_correct, _ = self.matlab_grader.grade_matlab_function(self.STEPS[self.step], submitted_text.strip())
         if all_correct:
-            self.feedback_area.setHtml(f'<p style="margin: 0; font-weight: bold; font-size: 20px;">Wonderful! Puzzle piece is: <strong><em>"{self.fetch_puzzle_piece}"</em></strong></p>')
+            self.feedback_area.setHtml(f'<p style="margin: 0; font-weight: bold; font-size: 20px;">Wonderful! Puzzle piece is: <strong><em>"{self.fetch_puzzle_piece()}"</em></strong></p>')
             self.callback()
         else:
             self.feedback_area.setHtml('<p style="margin: 0; font-weight: bold; font-size: 20px;">Not quite right. Try again!</p>')
@@ -283,7 +283,7 @@ if __name__ == "__main__":
     grader = MatlabGrader(matlab_engine, collection, mongo_client)
 
     # Create and show the main window
-    window = SeaThemedGameScreen(grader, step=3)
+    window = SeaThemedGameScreen(grader, step=0)
     window.show()
 
     # Run the application
