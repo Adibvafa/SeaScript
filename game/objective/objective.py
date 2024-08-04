@@ -14,22 +14,19 @@ class ObjectiveEntity(Entity):
         pass
 
 
-def on_complete(player: Player):
-    player.freeze_movement = False
-
-
 class ChallengeEntity(ObjectiveEntity):
 
     def __init__(self, pos: tuple[float, float], size: tuple[float, float], challenge_num: int):
         super().__init__(pos, size)
         self.challenge_num = challenge_num
 
+    def on_complete(self, player: Player):
+            self.interacted_with = True
+
     def interact(self, player: Player):
         if self.interacted_with:
             return
-        self.interacted_with = True
-        player.freeze_movement = True
-        qa.open_challenge(self.challenge_num, lambda: on_complete(player))
+        qa.open_challenge(self.challenge_num, lambda: self.on_complete(player))
 
 
 class Objective:

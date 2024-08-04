@@ -27,8 +27,6 @@ click_state = {
 
 
 def process_input(player: Player, camera: Camera):
-    if player.freeze_movement:
-        return
     speed = 0.25
     if keyboard_state[pg.K_w]:
         player.move(0, -speed)
