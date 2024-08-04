@@ -2,7 +2,7 @@ import pygame as pg
 
 
 from game.entities.chest import Chest
-from game.entities.angler import Angler
+from game.entities.QueenJelly import QueenJelly
 from game.world import world
 from game.render import world_renderer, gradient_renderer, coord_renderer, depth_renderer
 from game.render.camera import Camera
@@ -22,6 +22,7 @@ click_state = {
     pg.BUTTON_RIGHT: False
 }
 
+
 def process_input(player: Player, camera: Camera):
     speed = 0.25
     if keyboard_state[pg.K_w]:
@@ -36,6 +37,7 @@ def process_input(player: Player, camera: Camera):
         player.last_move_right = True
     camera.pos = player.pos
 
+
 def loop(player: Player, screen: pg.Surface, camera: Camera):
     running = True
 
@@ -45,6 +47,9 @@ def loop(player: Player, screen: pg.Surface, camera: Camera):
 
     chest = Chest((239.0, 182.0))
     world.add_entity(chest)
+
+    queen_jelly = QueenJelly((25.0, 50.0))
+    world.add_entity(queen_jelly)
 
     # Create a clock object
     clock = pg.time.Clock()

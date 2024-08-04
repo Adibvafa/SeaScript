@@ -8,5 +8,5 @@ class EntityType(Enum):
     SHARK = auto()
     CHEST = auto()
     ANGLER = auto()
-    KING_JELLYFISH = auto()
-    QUEEN_SHARK = auto()
+    QUEEN_JELLYFISH = auto()
+    KING_SHARK = auto()
