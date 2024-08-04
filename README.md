@@ -1,5 +1,7 @@
 # 🪼 SeaScript 🪸
 
+## Demo
+[Gameplay Demo on Youtube](https://www.youtube.com/watch?v=WbTVMxZvgnM)
 ## About
 SeaScript is a fin-tastic, gamified approach to learning MATLAB. In an ocean of boring tutorials, SeaScript swims ahead by making the learning process engaging and interactive.
 
